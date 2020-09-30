@@ -1,0 +1,24 @@
+{
+  "name": "assignment2csye6225fall2020",
+  "version": "1.0.0",
+  "description": "Assignment 2 - Cloud Computing CSYE6225",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon ./server.js",
+    "test": "mocha --exit"
+  },
+  "author": "Jai Devmane",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mocha": "^8.1.3",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.4",
+    "sequelize": "^6.3.5"
+  }
+}
