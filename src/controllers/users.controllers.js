@@ -11,11 +11,11 @@ exports.create = (req,res)=>{
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const password = req.body.password;
-    const email_address = req.body.email_address;
+    const username = req.body.username;
 
 
      //send 400 if body params are empty
-     if((!req.body.email_address || !req.body.password || !req.body.first_name || !req.body.last_name  )){
+     if((!req.body.username || !req.body.password || !req.body.first_name || !req.body.last_name  )){
         res.status(400).send(
             {
                 Error: "400 Bad Request"
@@ -25,7 +25,7 @@ exports.create = (req,res)=>{
 
     // send 400 if email is invalid - email regex check
     var mailformat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if(email_address.match(mailformat))
+    if(username.match(mailformat))
     {
         
     }
@@ -39,30 +39,42 @@ exports.create = (req,res)=>{
     }
     
 
-    //strong password regex check
-    var strongRegex = new RegExp("^(?=.[a-z])(?=.[A-Z])(?=.[0-9])(?=.[!@#\$%\^&\*])(?=.{8,})");
-    if(password.match(strongRegex))
-    {
-        console.log("password matches");
-        
-    }
-    else
-    {
-        res.status(400).send(
-            {
-                Error: "400 Bad Request"
-            });
-            return;
-    }
-    
+    // //strong password check
+    var ValidatePassword = require('validate-password');
+    var passRegex = new RegExp("\w{9,}");
 
-        
+    var options = {
+        enforce: {
+            lowercase: true,
+            uppercase: true,
+            specialCharacters: true,
+            numbers: true
+        }
+    };
+
+    var validator = new ValidatePassword(options);
+    var passwordData = validator.checkPassword(password);
+
+    console.log(passwordData.isValid); // false
+    console.log(passwordData.validationMessage); // 'The password must contain at least one uppercase letter'
+
+    if(passwordData.isValid && password.length >= 8){
+
+    }
+    else{
+                res.status(400).send(
+                {
+                    Error: "400 Bad Request"
+                });
+                return;
+    }
+
 
     //checking to see if user already exists in system, if exists throw error code 400
     Users.findAll({
         where: {
-            email_address:{
-                [Op.eq]: `${email_address}`
+            username:{
+                [Op.eq]: `${username}`
             }
         },
         raw:true,
@@ -105,26 +117,13 @@ exports.create = (req,res)=>{
     });
     
 
-    
-
-    // bcrypt.hash(password, saltRounds, function(err, hash) {
-    //     // Store hash in your password DB.
-    //     if (err) {
-    //         throw err
-    //       } else {
-    //         console.log("inner hash "+hash);
-    //         hash_pw = hash;
-    //         // hashProcessor(hash);
-    //       }
-    // });
-
 
 
     const users = {
             first_name: req.body.first_name,
           last_name: req.body.last_name,
           password: req.body.password,
-            email_address:req.body.email_address,
+            username:req.body.username,
     }
 
 };
@@ -149,8 +148,8 @@ exports.findUser = (req,res) =>{
 
     creds = parseHeader(req.headers.authorization);
 
-    const[email_address,password] = creds.split(':');
-    // console.log(email_address);
+    const[username,password] = creds.split(':');
+    // console.log(username);
     // console.log(password);
 
     // console.log(req.headers.authorization);
@@ -174,8 +173,8 @@ exports.findUser = (req,res) =>{
     
     Users.findOne({
         where: {
-            email_address:{
-                [Op.eq]: `${email_address}`
+            username:{
+                [Op.eq]: `${username}`
             }
         },
         raw:true,
@@ -220,18 +219,51 @@ exports.update = (req,res)=>{
     }
 
     //attempt to update email, createdon, updatedon, send 400
-    if((req.body.email_address || req.body.account_created || req.body.account_updated  )){
+    if((req.body.username || req.body.account_created || req.body.account_updated  )){
         res.status(400).send(
             {
-                Error: "404 Bad Request"
+                Error: "400 Bad Request"
             });
             return;
-    }
+    }        
+    
+        //strong password check
+        var ValidatePassword = require('validate-password');
+        var passRegex = new RegExp("\w{9,}");
+    
+        var options = {
+            enforce: {
+                lowercase: true,
+                uppercase: true,
+                specialCharacters: true,
+                numbers: true
+            }
+        };
+    
+        var validator = new ValidatePassword(options);
+        var passwordData = validator.checkPassword(req.body.password);
+    
+        console.log(passwordData.isValid); // false
+        console.log(passwordData.validationMessage); // 'The password must contain at least one uppercase letter'
+    
+        if(passwordData.isValid && req.body.password.length >= 8){
+    
+        }
+        else{
+                    res.status(400).send(
+                    {
+                        Error: "400 Bad Request"
+                    });
+                    return;
+        }
+    
+
+
 
       creds = parseHeader(req.headers.authorization);
 
-      const[h_email_address,h_password] = creds.split(':');
-      // console.log(email_address);
+      const[h_username,h_password] = creds.split(':');
+      // console.log(username);
       // console.log(password);
   
       // console.log(req.headers.authorization);
@@ -244,8 +276,8 @@ exports.update = (req,res)=>{
       
       Users.findOne({
           where: {
-              email_address:{
-                  [Op.eq]: `${h_email_address}`
+              username:{
+                  [Op.eq]: `${h_username}`
               }
           },
           raw:true,
@@ -257,12 +289,7 @@ exports.update = (req,res)=>{
                   console.log(result);
                   // console.log("err"+err);
                   if (result) {
-
-                    // password = req.body.password;
-
-                    // const users = 
                     
-
                         // console.log(JSON.stringify(users));
 
                         bcrypt.hash(req.body.password,10).then(function(hash) {
@@ -282,8 +309,8 @@ exports.update = (req,res)=>{
                             }})
                             .then(() => {return Users.findOne({
                                 where: {
-                                    email_address:{
-                                        [Op.eq]: `${data.email_address}`
+                                    username:{
+                                        [Op.eq]: `${data.username}`
                                     }
                                 },
                                 raw:true,
@@ -295,7 +322,7 @@ exports.update = (req,res)=>{
                             })
                             .catch(err=>{
                                 res.status(400).send({
-                                    Error: "405 Bad Request"
+                                    Error: "400 Bad Request"
                                 });
                             });
                           
@@ -323,7 +350,7 @@ exports.update = (req,res)=>{
       })
       .catch(err=>{
           res.status(400).send({
-              Error:"401 Bad Request"
+              Error:"400 Bad Request"
           });
       });
 };
