@@ -43,44 +43,6 @@ describe('WebApp API Test', ()=> {
                     done();
                 })
         });
-
-        // // //check for invalid password
-        // it('If password does not match standards, it should return message with error', (done) =>{
-        //     let body = {
-        //         first_name: "Jai",
-        //         last_name:  "Devmane",
-        //         email_address: "jai@jai.com",
-        //         password: "Dhananjai04@123",
-        //     };
-
-        //     chai.request(app)
-        //         .post('/v1/user')
-        //         .send(body)
-        //         .end((err, res) =>{
-        //             expect(res).to.have.status(400);
-        //             done();
-        //         })
-        // });
-
-        // //check for invalid email
-        // //check for invalid password
-        // it('If email does not match standards, it should return message with error', (done) =>{
-        //     let body = {
-        //         first_name: "Jai",
-        //         last_name:  "Devmane",
-        //         email_address: "jai@jai.com",
-        //         password: "Aa@171111111"
-        //     };
-
-        //     chai.request(app)
-        //         .post('/v1/user')
-        //         .send(body)
-        //         .end((err, res) =>{
-        //             expect(res).to.have.status(400);
-        //             done();
-        //         })
-        // });
-
         
     });
 });
