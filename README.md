@@ -1,5 +1,5 @@
 # webapp
-CSYE6225 Fall 2020 WebApp
+CSYE6225 Fall 2020 WebApp Demo
 
 Cloud Computing
 
