@@ -26,6 +26,6 @@ module.exports = app;
 
 
 
-database.sequelize.sync({force:true}).then(()=>{
+database.sequelize.sync().then(()=>{
     console.log("Sync Database");
 });
