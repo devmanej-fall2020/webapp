@@ -9,8 +9,13 @@ const Sequelize = require ("sequelize");
 const { categories } = require("../models");
 const { x } = require("joi");
 const { v4: uuidv4 } = require('uuid');
+const multer  = require('multer');
 
 const saltRounds = 10;
+
+var AWS = require('aws-sdk');
+// Set the region 
+AWS.config.update({region: 'us-east-1'});
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -540,10 +545,14 @@ exports.createQuestion = async (req,res)=>{
                             Question.findByPk(question1.id, {
                                 include: [
                                 {model: Category, as: "categories", attributes: ["id", "category"],through: {attributes: []} },
-                                {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]}
+                                {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]},
+                                {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
                             ]
                             }).then(result =>{
-                                result = JSON.parse(JSON.stringify(result));
+                                //result = JSON.parse(JSON.stringify(result));
+                                result = JSON.stringify(result);
+                                result = result.replace("files", "attachments");
+                                result = JSON.parse(result);
                                 console.log(result);
                                 return res.status(201).json(result)
                             }).catch(err=>{
@@ -619,13 +628,18 @@ exports.findQuestionById = (req,res) =>{
     Question.findByPk(id, {
         include: [
         {model: Category, as: "categories", attributes: ["id", "category"], through: {attributes: []}},
-        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]}
+        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]},
+        {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
+
     ]
     }).then(result =>{
         if(result == null){
             throw err;
         }
-        result = JSON.parse(JSON.stringify(result));
+        result = JSON.stringify(result);
+        result = result.replace("files", "attachments");
+        result = JSON.parse(result);
+        // result = JSON.parse(JSON.stringify(result));
         console.log(result);
         return res.status(200).json(result)
     }).catch(err=>{
@@ -647,11 +661,14 @@ exports.findAllQuestions = (req,res) =>{
     Question.findAll({
         include: [
         {model: Category, as: "categories", attributes: ["id", "category"], through: {attributes: []}  },
-        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]}
+        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]},
+        {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
     ]
     }).then(result =>{
-        result = JSON.parse(JSON.stringify(result));
-       
+        result = JSON.stringify(result);
+        result = result.replace("files", "attachments");
+        result = JSON.parse(result);
+       console.log(result);
         return res.status(200).json(result)
     }).catch(err=>{
         res.status(400).send({
@@ -726,32 +743,35 @@ exports.answerQuestion = async (req,res)=>{
                     });
 
                 
-                    let answer = await Answer.create({
+                    let answer_created = await Answer.create({
                         answer_text: req.body.answer_text,
                         userId: `${data.id}`,
                         questionId: `${question_id}`                   
                         }
-                      )
-                    .then(data=>{
-                        return data;
-                    })
-                    .then(data =>{
-                        data = JSON.parse(JSON.stringify(data));
-                        console.log(data);
-                        res.status(201).send(data);
-                    })
-                    .catch(err=>{
-                        res.status(400).send({
-                            Error:"400 Bad Request"
-                        });
-                        return;
-                    });
+                      );
+                    // .then(data=>{
+                    //     return data;
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     console.log(data);
+                    //     // res.status(201).send(data);
+                    // })
+                    // .catch(err=>{
+                    //     res.status(400).send({
+                    //         Error:"400 Bad Request"
+                    //     });
+                    //     return;
+                    // });
+                    answer1 = JSON.parse(JSON.stringify(answer_created));
+
+                    console.log(answer1);
 
                     // await user.addQuestion(question);
 
 
                     //console.log(q_add);
-                    console.log(user);
+                    //console.log(user);
                     //user.addQuestion(q_add);
                     // question.setUser(user);
 
@@ -766,20 +786,31 @@ exports.answerQuestion = async (req,res)=>{
 
                     // testQuestion.addCategory(testCategory);
 
-                    const ques = Question.findAll( {
-                        include:Category,
-                        
-                            // include: [Answer],
+                    const ans = Answer.findByPk(answer1.id, {
+                        include: [
+                            {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
+                    ]
+                    }
+                        // {model: File, as: "files"}
+                        // ,
+                    //     {
+                    //     include:Category
+                    //         // include: [Answer],
                           
-                    })
+                    // }
+                    
+                    )
                     .then(data =>{
-                        data = JSON.parse(JSON.stringify(data));
+                        //data = JSON.parse(JSON.stringify(data));
+                        data = JSON.stringify(data);
+                        data = data.replace("files", "attachments");
+                        data = JSON.parse(data);
                         // delete data.password;
                         console.log((data));
-                        // res.send(data);
+                        res.send(data);
 
                     });
-                    console.log(ques);
+                    //console.log(ans);
                     // ques.forEach(ques =>{
                     //     console.log(ques.Category[0])
                     // });
@@ -1449,12 +1480,32 @@ exports.getAnswer = (req,res)=>{
          if(data.length != 0){
                      
                      //find answer by pkid
-                     Answer.findByPk(answer_id)
+                     Answer.findByPk(answer_id,
+                        {
+                            include: [
+                            {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
+                        ]
+                        }
+                        
+                        )
+                        .then(result=>{
+                            if(result == null){
+                                throw err;
+                            }
+                            result = JSON.stringify(result);
+                            result = result.replace("files", "attachments");
+                            result = JSON.parse(result);
+                            // result = JSON.parse(JSON.stringify(result));
+                            console.log(result);
+                            return res.status(200).json(result)
+                        })
                      .then(data=>{
                          console.log(data);
                          answer_ret = data.answer_text;
                          if(data.length != 0){
                              console.log("answer id found in question table")
+
+                             
                              res.send(data);
 
 
@@ -1478,11 +1529,4 @@ exports.getAnswer = (req,res)=>{
 };
 
 
-
-
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////
