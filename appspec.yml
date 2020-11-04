@@ -1,15 +1,15 @@
 version: 0.0
 os: linux
 files:
-  - source: ./codedeploy_artifact/
-    destination: /home/ubuntu/webapp
+  - source: /
+    destination: /home/ubuntu/webapp/
 hooks:
   BeforeInstall:
-    - location: scripts/install_dependencies.sh
+    - location: scripts/before_install.sh
       timeout: 180
       runas: ubuntu
   AfterInstall:
-    - location: scripts/change_permissions.sh
+    - location: scripts/install_dependencies.sh
       timeout: 180
       runas: ubuntu
   ApplicationStart:
