@@ -2,5 +2,5 @@
 cd /home/ubuntu/webapp/
 
 
-nohup npm start > /dev/null 2> dev/null < /dev/null &
+sudo nohup npm start > /dev/null 2> dev/null < /dev/null &
 
