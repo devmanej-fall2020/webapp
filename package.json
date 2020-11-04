@@ -4,7 +4,7 @@
   "description": "Assignment 2 - Cloud Computing CSYE6225",
   "main": "server.js",
   "scripts": {
-    "start": "node ./server.js",
+    "start": "node server.js",
     "test": "mocha --exit"
   },
   "author": "Jai Devmane",
