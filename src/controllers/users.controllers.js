@@ -661,7 +661,7 @@ exports.findAllQuestions = (req,res) =>{
     Question.findAll({
         include: [
         {model: Category, as: "categories", attributes: ["id", "category"], through: {attributes: []}  },
-        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"],  include: [{model: File, as: "attachments"}]},
+        {model: Answer, as: "answers", attributes: ["id", "userId", "questionId", "createdAt", "updatedAt", "answer_text"]},
         {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
     ]
     }).then(result =>{
