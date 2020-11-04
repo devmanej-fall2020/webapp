@@ -48,11 +48,11 @@ jobs:
         
         
       - name: Copy Artifact to S3
-          run: | 
+        run: | 
             aws s3 sync ./codedeploy_artifact s3://${{ SECRETS.S3_CODEDEPLOY_BUCKET}}
 
       - name: CodeDeploy API Call
-          run: | 
+        run: | 
             output=$(aws deploy create-deployment \
             --application-name {{ env.CODEDEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.OneAtATime \
