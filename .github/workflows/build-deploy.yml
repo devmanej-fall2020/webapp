@@ -56,11 +56,11 @@ jobs:
             output=$(aws deploy create-deployment \
             --application-name ${{ env.CODEDEPLOY_APPLICATION_NAME }} \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --deployment-group-name ${{ CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
+            --deployment-group-name ${{ env.CODEDEPLOY_APPLICATION_DEPLOYMENT_GROUP_NAME }} \
             --description " CodeDeploy Deployment" \
             --region ${{ env.AWS_REGION }}
             --output json
-            --s3-location bucket=${{ SECRETS.S3_CODEDEPLOY_BUCKET}},bundleType=zip,key=${{ env.ARTIFACT_NAME}})
+            --s3-location bucket=${{ secrets.S3_CODEDEPLOY_BUCKET}},bundleType=zip,key=${{ env.ARTIFACT_NAME}})
 
             echo $output
 
