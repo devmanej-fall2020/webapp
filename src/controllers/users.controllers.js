@@ -24,7 +24,7 @@ AWS.config.update({region: 'us-east-1'});
 //Creates new user using body parameters
 exports.create = (req,res)=>{
 
-    logger.log("INFO","User creation process started");
+    logger.log('INFO','User creation process started');
 
     //defining variables from request body
     const first_name = req.body.first_name;
