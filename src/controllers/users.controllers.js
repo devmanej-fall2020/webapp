@@ -11,6 +11,8 @@ const { x } = require("joi");
 const { v4: uuidv4 } = require('uuid');
 const multer  = require('multer');
 const logger = require ('../config/logger.js');
+var StatsD = require('node-statsd'),
+client = new StatsD();
 
 const saltRounds = 10;
 
@@ -25,6 +27,10 @@ AWS.config.update({region: 'us-east-1'});
 exports.create = (req,res)=>{
 
     logger.info('User creation process started');
+    client.increment('counter_user_create');
+    var user_create_start_time = Date.now();
+    
+
 
     //defining variables from request body
     const first_name = req.body.first_name;
@@ -145,6 +151,10 @@ exports.create = (req,res)=>{
             username:req.body.username,
     }
 
+    logger.info('User creation process ended');
+    var user_create_end_time = Date.now();
+    client.timing('user_create_timing', user_create_end_time - user_create_start_time );
+
 };
 
 //parses authorization header
@@ -160,6 +170,9 @@ function parseHeader(header){
 
 //Gets user info from database
 exports.findUser = (req,res) =>{
+
+    logger.info('Find user process started');
+    client.increment('user_find');
 
     if (!req.headers.authorization) {
         res.status(403).send({ Error: 'No credentials sent!' });
@@ -218,12 +231,17 @@ exports.findUser = (req,res) =>{
         });
     });
 
+    logger.info('Find user process ended');
+
 };
 
 /////////////////////////////////////////////////////////////////////////////
 
 //Updates User
 exports.update = (req,res)=>{
+
+    logger.info('User update process started');
+    client.increment('user_update');
 
     //check if credential headers are not present
     if (!req.headers.authorization) {
@@ -375,6 +393,9 @@ exports.update = (req,res)=>{
               Error:"400 Bad Request"
           });
       });
+
+
+      logger.info('User update process ended');
 };
 
 
@@ -383,8 +404,11 @@ exports.update = (req,res)=>{
 
 exports.findUserById = (req,res) =>{
 
-    const id = req.params.id;
+    logger.info('User findById process started');
+    client.increment('user_findById');
 
+    const id = req.params.id;
+    
     // if (!req.headers.authorization) {
     //     res.status(403).send({ Error: 'No credentials sent!' });
     //     return;
@@ -438,6 +462,8 @@ exports.findUserById = (req,res) =>{
         });
     });
 
+    logger.info('User findById process ended');
+
 };
 
 
@@ -445,6 +471,9 @@ exports.findUserById = (req,res) =>{
 
 //Creates question with authenticated user endpoint
 exports.createQuestion = async (req,res)=>{
+
+    logger.info('Question creation process started');
+    client.increment('question_create');
 
     //check if credential headers are not present
     if (!req.headers.authorization) {
@@ -588,6 +617,8 @@ exports.createQuestion = async (req,res)=>{
               Error:"400 Bad Request"
           });
       });
+
+      logger.info('Question creation process ended');
 };
 
 
@@ -595,6 +626,10 @@ exports.createQuestion = async (req,res)=>{
 // Find user by user_id - Unauthenticated
 
 exports.findUserById = (req,res) =>{
+
+    logger.info('User findById process started');
+    client.increment('user_findById');
+
 
     const id = req.params.id;
 
@@ -619,11 +654,16 @@ exports.findUserById = (req,res) =>{
         });
     });
 
+    logger.info('User findById process ended');
+
 };
 
 ///////////////////////////////////////////////////
 // Find question by question_id - Unauthenticated
 exports.findQuestionById = (req,res) =>{
+
+    logger.info('Question findById process started');
+    client.increment('question_findById');
 
     const id = req.params.question_id;
 
@@ -652,6 +692,7 @@ exports.findQuestionById = (req,res) =>{
         return;
     });
     
+    logger.info('Question findById process ended');
     
 
 };
@@ -659,6 +700,9 @@ exports.findQuestionById = (req,res) =>{
 ////////////////////////////////////////////////
 // Find all questions - Unauthenticated
 exports.findAllQuestions = (req,res) =>{
+
+    logger.info('Question find all process started');
+    client.increment('question_findAll');
 
 
     Question.findAll({
@@ -680,6 +724,8 @@ exports.findAllQuestions = (req,res) =>{
         return;
     });
 
+    logger.info('Question find all process ended');
+
    
 };
 
@@ -688,6 +734,9 @@ exports.findAllQuestions = (req,res) =>{
 //Answer a question - Authenticated
 
 exports.answerQuestion = async (req,res)=>{
+
+    logger.info('Answer a question process started');
+    client.increment('answer_answerAQuestion');
 
     const question_id = req.params.question_id;
 
@@ -840,6 +889,8 @@ exports.answerQuestion = async (req,res)=>{
               Error:"400 Bad Request"
           });
       });
+
+      logger.info('Answer a question process ended');
 };
 
 
@@ -848,6 +899,9 @@ exports.answerQuestion = async (req,res)=>{
 //Updates a question's answer - Authenticated
 
 exports.updateAnswer = (req,res)=>{
+
+    logger.info('Update answer process started');
+    client.increment('answer_updateAnswer');
 
     const question_id = req.params.question_id;
     const answer_id = req.params.answer_id;
@@ -991,6 +1045,8 @@ exports.updateAnswer = (req,res)=>{
               Error:"404 Bad Request"
           });
       });
+
+      logger.info('Update answer process ended');
 };
 
 
@@ -999,6 +1055,9 @@ exports.updateAnswer = (req,res)=>{
 
 //Delete an answer - Authenticated
 exports.deleteAnswer = (req,res)=>{
+
+    logger.info('Delete answer process started');
+    client.increment('answer_deleteAnswer');
 
     const question_id = req.params.question_id;
     const answer_id = req.params.answer_id;
@@ -1142,6 +1201,8 @@ exports.deleteAnswer = (req,res)=>{
               Error:"404 Bad Request"
           });
       });
+
+      logger.info('Delete answer process ended');
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -1149,6 +1210,9 @@ exports.deleteAnswer = (req,res)=>{
 //Delete a question - Authenticated
 
 exports.deleteQuestion = (req,res)=>{
+
+    logger.info('Delete question process started');
+    client.increment('question_deleteQuestion');
 
     const question_id = req.params.question_id;
 
@@ -1308,6 +1372,8 @@ exports.deleteQuestion = (req,res)=>{
               Error:"404 Not Found"
           });
       });
+
+      logger.info('Delete question process ended');
 };
 
 
@@ -1315,6 +1381,9 @@ exports.deleteQuestion = (req,res)=>{
 
 //Update a question
 exports.updateQuestion = async (req,res)=>{
+
+    logger.info('Update question process started');
+    client.increment('question_updateQuestion');
 
     const question_id = req.params.question_id;
     
@@ -1453,12 +1522,17 @@ exports.updateQuestion = async (req,res)=>{
 
                 }});
 
+                logger.info('Update question process ended');
+
 };
 
 ///////////////////////////////////////////////////////////////////////
 //Get a question's answer - Unauthenticated
 
 exports.getAnswer = (req,res)=>{
+
+    logger.info('Get a question\'s answer process started');
+    client.increment('question_getAnswer');
 
     const question_id = req.params.question_id;
     const answer_id = req.params.answer_id;
@@ -1527,6 +1601,9 @@ exports.getAnswer = (req,res)=>{
          res.status(404).send({
              Error:"404 Not Found"
              })});
+
+
+             logger.info('Get a question\'s answer process ended');
 
 
 };
