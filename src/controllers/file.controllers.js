@@ -14,6 +14,10 @@ const multer  = require('multer');
 const AWS = require('aws-sdk');
 const path = require("path") 
 const S3_BUCKET = process.env.S3_BUCKET_NAME
+const logger = require ('../config/logger.js');
+var StatsD = require('node-statsd'),
+client = new StatsD();
+
 
 //parses authorization header
 function parseHeader(header){
@@ -31,7 +35,8 @@ function parseHeader(header){
 exports.addFileToQuestion = async (req,res)=>{
 
     logger.info('Add file to question process started');
-    client.increment('file_addFileToQuestion');
+    client.increment('counter_file_addFileToQuestion');
+    var file_addFileToQuestion_start_time = Date.now();
 
 
 
@@ -40,6 +45,10 @@ exports.addFileToQuestion = async (req,res)=>{
     //check if credential headers are not present
     if (!req.headers.authorization) {
         res.status(400).send({ Error: "400 Bad Request" });
+        logger.warn('Bad Request');
+        logger.info('Add file to question process ended');
+        var file_addFileToQuestion_end_time = Date.now();
+        client.timing('timing_file_addFileToQuestion', file_addFileToQuestion_end_time - file_addFileToQuestion_start_time );
         return;
     }
 
@@ -59,7 +68,7 @@ exports.addFileToQuestion = async (req,res)=>{
   
       // console.log(req.headers.authorization);
       
-
+      var db_findOne_file_addFileToQuestion_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -69,6 +78,9 @@ exports.addFileToQuestion = async (req,res)=>{
           raw:true,
       })
       .then(data=>{
+        var db_findOne_file_addFileToQuestion_end_time = Date.now();
+        client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
+
           console.log("data"+data);
         data_user_id = data.id;
           if(data.length != 0){
@@ -107,11 +119,16 @@ exports.addFileToQuestion = async (req,res)=>{
                     s3_object_string = question_id + "/" + new_file_uuid + "/" + path.basename(file.originalname)
                     uploadParams.Key = s3_object_string;
 
+                    var s3_upload_file_addFileToQuestion_start_time = Date.now();
                     //call S3 to retrieve upload file to specified bucket
                     s3.upload (uploadParams, async function (err, data) {
                     if (err) {
+                        logger.warn('Bad Request');
+                        var s3_upload_file_addFileToQuestion_end_time = Date.now();
+                    client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
                         console.log("Error", err);
                     } if (data) {
+
                         console.log("Upload Success", data);
 
                         
@@ -160,6 +177,17 @@ exports.addFileToQuestion = async (req,res)=>{
                                 res.status(400).send({
                                     Error:"400 Bad Request"
                                 });
+
+
+                                var s3_upload_file_addFileToQuestion_end_time = Date.now();
+                                client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
+                                
+                                logger.warn('Bad Request');
+                                logger.info('Add file to question process ended');
+                                var file_addFileToQuestion_end_time = Date.now();
+                                client.timing('timing_file_addFileToQuestion', file_addFileToQuestion_end_time - file_addFileToQuestion_start_time );
+
+
                                 return;
                             });
 
@@ -167,9 +195,11 @@ exports.addFileToQuestion = async (req,res)=>{
 
 
                         //   await Question.addFile(added_file_question);
-
+                        var s3_upload_file_addFileToQuestion_end_time = Date.now();
+                        client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
                     }
                     });
+                    
                     
 
                     // var bucketParams = {
@@ -277,9 +307,19 @@ exports.addFileToQuestion = async (req,res)=>{
           res.status(400).send({
               Error:"400 Bad Request"
           });
+          logger.warn('Bad Request');
+          var db_findOne_file_addFileToQuestion_end_time = Date.now();
+          client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
+
       });
 
       logger.info('Add file to question process ended');
+      var file_addFileToQuestion_end_time = Date.now();
+      client.timing('timing_file_addFileToQuestion', file_addFileToQuestion_end_time - file_addFileToQuestion_start_time );
+      client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
+      client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
+
+
 };
 
 
@@ -291,7 +331,9 @@ exports.addFileToQuestion = async (req,res)=>{
 exports.addFileToAnswer = async (req,res)=>{
 
     logger.info('Add file to answer process started');
-    client.increment('file_addFileToAnswer');
+    client.increment('counter_file_addFileToAnswer');
+    var file_addFileToAnswer_start_time = Date.now();
+
 
 
 
@@ -302,6 +344,10 @@ exports.addFileToAnswer = async (req,res)=>{
     //check if credential headers are not present
     if (!req.headers.authorization) {
         res.status(400).send({ Error: "400 Bad Request" });
+        logger.warn('Bad Request');
+        logger.info('Add file to answer process ended');
+        var file_addFileToAnswer_end_time = Date.now();
+        client.timing('timing_file_addFileToAnswer', file_addFileToAnswer_end_time - file_addFileToAnswer_start_time );
         return;
     }
 
@@ -321,7 +367,7 @@ exports.addFileToAnswer = async (req,res)=>{
   
       // console.log(req.headers.authorization);
       
-
+      var db_find_file_addFileToAnswer_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -331,6 +377,9 @@ exports.addFileToAnswer = async (req,res)=>{
           raw:true,
       })
       .then(data=>{
+        var db_find_file_addFileToAnswer_end_time = Date.now();
+        client.timing('timing_db_find_file_addFileToAnswer', db_find_file_addFileToAnswer_end_time - db_find_file_addFileToAnswer_start_time );
+
         data = JSON.parse(JSON.stringify(data));
           console.log("data"+data);
        fetched_userid = data.id;
@@ -372,9 +421,13 @@ exports.addFileToAnswer = async (req,res)=>{
 
                     uploadParams.Key = s3_object_string;
 
+                    var s3_upload_file_addFileToAnswer_start_time = Date.now();
                     //call S3 to retrieve upload file to specified bucket
                     s3.upload (uploadParams, async function (err, data) {
                     if (err) {
+                        logger.warn('Bad Request');
+                        var s3_upload_file_addFileToAnswer_end_time = Date.now();
+                    client.timing('timing_s3_upload_file_addFileToAnswer', s3_upload_file_addFileToAnswer_end_time - s3_upload_file_addFileToAnswer_start_time );
                         console.log("Error", err);
                     } if (data) {
                         console.log("Upload Success", data);
@@ -427,7 +480,19 @@ exports.addFileToAnswer = async (req,res)=>{
                                 res.status(400).send({
                                     Error:"400 Bad Request"
                                 });
+
+                                var s3_upload_file_addFileToAnswer_end_time = Date.now();
+                                client.timing('timing_s3_upload_file_addFileToAnswer', s3_upload_file_addFileToAnswer_end_time - s3_upload_file_addFileToAnswer_start_time );
+
+                                var db_find_file_addFileToAnswer_end_time = Date.now();
+                                client.timing('timing_db_find_file_addFileToAnswer', db_find_file_addFileToAnswer_end_time - db_find_file_addFileToAnswer_start_time );
+
+                                logger.info('Add file to answer process ended');
+                                var file_addFileToAnswer_end_time = Date.now();
+                                client.timing('timing_file_addFileToAnswer', file_addFileToAnswer_end_time - file_addFileToAnswer_start_time );
+
                                 return;
+
                             });
 
 
@@ -436,9 +501,14 @@ exports.addFileToAnswer = async (req,res)=>{
                         
 
                         //   await Answer.addFile(added_file_answer);
-
+                        
+                        var s3_upload_file_addFileToAnswer_end_time = Date.now();
+                    client.timing('timing_s3_upload_file_addFileToAnswer', s3_upload_file_addFileToAnswer_end_time - s3_upload_file_addFileToAnswer_start_time );
                     }
                     });
+
+                    
+
                     
 
                     // var bucketParams = {
@@ -546,9 +616,17 @@ exports.addFileToAnswer = async (req,res)=>{
           res.status(400).send({
               Error:"400 Bad Request"
           });
+          logger.warn('Bad Request');
+          var db_find_file_addFileToAnswer_end_time = Date.now();
+        client.timing('timing_db_find_file_addFileToAnswer', db_find_file_addFileToAnswer_end_time - db_find_file_addFileToAnswer_start_time );
       });
 
       logger.info('Add file to answer process ended');
+      var file_addFileToAnswer_end_time = Date.now();
+      client.timing('timing_file_addFileToAnswer', file_addFileToAnswer_end_time - file_addFileToAnswer_start_time );
+      client.timing('timing_db_find_file_addFileToAnswer', db_find_file_addFileToAnswer_end_time - db_find_file_addFileToAnswer_start_time );
+      client.timing('timing_s3_upload_file_addFileToAnswer', s3_upload_file_addFileToAnswer_end_time - s3_upload_file_addFileToAnswer_start_time );
+
 };
 
 
@@ -561,7 +639,8 @@ exports.addFileToAnswer = async (req,res)=>{
 exports.deleteFileFromQuestion = (req,res)=>{
 
     logger.info('Delete file from question process started');
-    client.increment('file_deleteFileFromQuestion');
+    client.increment('counter_file_deleteFileFromQuestion');
+    var file_deleteFileFromQuestion_start_time = Date.now();
 
     const question_id = req.params.question_id;
     const file_id = req.params.file_id;
@@ -570,6 +649,10 @@ exports.deleteFileFromQuestion = (req,res)=>{
     //check if credential headers are not present
     if (!req.headers.authorization) {
         res.status(404).send({ Error: "404 Not Found" });
+        logger.warn('Not Found');
+        logger.info('Delete file from question process ended');
+        var file_deleteFileFromQuestion_end_time = Date.now();
+        client.timing('timing_file_deleteFileFromQuestion', file_deleteFileFromQuestion_end_time - file_deleteFileFromQuestion_start_time );
         return;
     }
 
@@ -579,6 +662,10 @@ exports.deleteFileFromQuestion = (req,res)=>{
             {
                 Error: "404 Not Found"
             });
+            logger.warn('Not Found');
+            logger.info('Delete file from question process ended');
+            var file_deleteFileFromQuestion_end_time = Date.now();
+            client.timing('timing_file_deleteFileFromQuestion', file_deleteFileFromQuestion_end_time - file_deleteFileFromQuestion_start_time );
             return;
     }
 
@@ -597,7 +684,7 @@ exports.deleteFileFromQuestion = (req,res)=>{
           
         }
 
-      
+      var db_find_file_deleteFileFromQuestion_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -607,6 +694,8 @@ exports.deleteFileFromQuestion = (req,res)=>{
           raw:true,
       })
       .then(data => {
+        var db_find_file_deleteFileFromQuestion_end_time = Date.now();
+        client.timing('timing_db_find_file_deleteFileFromQuestion', db_find_file_deleteFileFromQuestion_end_time - db_find_file_deleteFileFromQuestion_start_time );
         const currentUser_userId = data.id;
         console.log("loginuser :"+currentUser_userId);
           if(data.length != 0){
@@ -668,6 +757,7 @@ exports.deleteFileFromQuestion = (req,res)=>{
                                                             };
                                                         console.log(params);
 
+                                                            var s3_delete_file_deleteFileFromQuestion_start_time = Date.now();
                                                             s3.deleteObject(params, function(err, data) {
                                                                 if (err) console.log(err, err.stack); // an error occurred
                                                                 else     console.log(data);           // successful response
@@ -676,6 +766,10 @@ exports.deleteFileFromQuestion = (req,res)=>{
                                                                 }
                                                                 */
                                                             });
+                                                            var s3_delete_file_deleteFileFromQuestion_end_time = Date.now();
+                                                            client.timing('timing_s3_delete_file_deleteFileFromQuestion', s3_delete_file_deleteFileFromQuestion_end_time - s3_delete_file_deleteFileFromQuestion_start_time );
+
+
 
 
 
@@ -797,9 +891,17 @@ exports.deleteFileFromQuestion = (req,res)=>{
           res.status(404).send({
               Error:"404 Bad Request"
           });
+          logger.warn('Bad Request');
+          var db_find_file_deleteFileFromQuestion_end_time = Date.now();
+          client.timing('timing_db_find_file_deleteFileFromQuestion', db_find_file_deleteFileFromQuestion_end_time - db_find_file_deleteFileFromQuestion_start_time );
       });
 
       logger.info('Delete file from question process ended');
+      var file_deleteFileFromQuestion_end_time = Date.now();
+      client.timing('timing_file_deleteFileFromQuestion', file_deleteFileFromQuestion_end_time - file_deleteFileFromQuestion_start_time );
+      client.timing('timing_db_find_file_deleteFileFromQuestion', db_find_file_deleteFileFromQuestion_end_time - db_find_file_deleteFileFromQuestion_start_time );
+      client.timing('timing_s3_delete_file_deleteFileFromQuestion', s3_delete_file_deleteFileFromQuestion_end_time - s3_delete_file_deleteFileFromQuestion_start_time );
+
 };
 
 
@@ -887,7 +989,8 @@ exports.deleteFileFromQuestion = (req,res)=>{
 exports.deleteFileFromAnswer = (req,res)=>{
 
     logger.info('Delete file from answer process started');
-    client.increment('file_deleteFileFromAnswer');
+    client.increment('counter_file_deleteFileFromAnswer');
+    var file_deleteFileFromAnswer_start_time = Date.now();
 
     const question_id = req.params.question_id;
     const answer_id = req.params.answer_id;
@@ -897,6 +1000,10 @@ exports.deleteFileFromAnswer = (req,res)=>{
     //check if credential headers are not present
     if (!req.headers.authorization) {
         res.status(404).send({ Error: "404 Not Found" });
+        logger.warn('Not Found');
+        logger.info('Delete file from answer process ended');
+        var file_deleteFileFromAnswer_end_time = Date.now();
+        client.timing('timing_file_deleteFileFromAnswer', file_deleteFileFromAnswer_end_time - file_deleteFileFromAnswer_start_time );
         return;
     }
 
@@ -906,6 +1013,10 @@ exports.deleteFileFromAnswer = (req,res)=>{
             {
                 Error: "404 Not Found"
             });
+            logger.warn('Not Found');
+            logger.info('Delete file from answer process ended');
+            var file_deleteFileFromAnswer_end_time = Date.now();
+            client.timing('timing_file_deleteFileFromAnswer', file_deleteFileFromAnswer_end_time - file_deleteFileFromAnswer_start_time );
             return;
     }
 
@@ -924,7 +1035,7 @@ exports.deleteFileFromAnswer = (req,res)=>{
           
         }
 
-      
+      var db_find_file_deleteFileFromAnswer_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -934,6 +1045,9 @@ exports.deleteFileFromAnswer = (req,res)=>{
           raw:true,
       })
       .then(data => {
+        var db_find_file_deleteFileFromAnswer_end_time = Date.now();
+        client.timing('timing_db_find_file_deleteFileFromAnswer', db_find_file_deleteFileFromAnswer_end_time - db_find_file_deleteFileFromAnswer_start_time );
+
         const currentUser_userId = data.id;
         console.log("loginuser :"+currentUser_userId);
           if(data.length != 0){
@@ -982,7 +1096,8 @@ exports.deleteFileFromAnswer = (req,res)=>{
                                                             Key: file_key
                                                             };
                                                             console.log(params);
-
+                                                            
+                                                            var s3_delete_file_deleteFileFromAnswer_start_time = Date.now();
                                                             s3.deleteObject(params, function(err, data) {
                                                                 if (err) console.log(err, err.stack); // an error occurred
                                                                 else     console.log(data);           // successful response
@@ -991,6 +1106,10 @@ exports.deleteFileFromAnswer = (req,res)=>{
                                                                 }
                                                                 */
                                                             });
+                                                            var s3_delete_file_deleteFileFromAnswer_end_time = Date.now();
+                                                            client.timing('timing_s3_delete_file_deleteFileFromAnswer', s3_delete_file_deleteFileFromAnswer_end_time - s3_delete_file_deleteFileFromAnswer_start_time );
+
+
 
 
 
@@ -1082,9 +1201,18 @@ exports.deleteFileFromAnswer = (req,res)=>{
           res.status(404).send({
               Error:"404 Bad Request"
           });
+          logger.warn('Bad Request');
+          var db_find_file_deleteFileFromAnswer_end_time = Date.now();
+          client.timing('timing_db_find_file_deleteFileFromAnswer', db_find_file_deleteFileFromAnswer_end_time - db_find_file_deleteFileFromAnswer_start_time );
+  
       });
 
       logger.info('Delete file from answer process ended');
+      var file_deleteFileFromAnswer_end_time = Date.now();
+      client.timing('timing_file_deleteFileFromAnswer', file_deleteFileFromAnswer_end_time - file_deleteFileFromAnswer_start_time );
+      client.timing('timing_db_find_file_deleteFileFromAnswer', db_find_file_deleteFileFromAnswer_end_time - db_find_file_deleteFileFromAnswer_start_time );
+      client.timing('timing_s3_delete_file_deleteFileFromAnswer', s3_delete_file_deleteFileFromAnswer_end_time - s3_delete_file_deleteFileFromAnswer_start_time );
+
 };
 
 
