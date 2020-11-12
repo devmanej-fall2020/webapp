@@ -30,6 +30,9 @@ function parseHeader(header){
 
 exports.addFileToQuestion = async (req,res)=>{
 
+    logger.info('Add file to question process started');
+    client.increment('file_addFileToQuestion');
+
 
 
     const question_id = req.params.question_id;
@@ -275,6 +278,8 @@ exports.addFileToQuestion = async (req,res)=>{
               Error:"400 Bad Request"
           });
       });
+
+      logger.info('Add file to question process ended');
 };
 
 
@@ -284,6 +289,9 @@ exports.addFileToQuestion = async (req,res)=>{
 //Attach a file to the answer - Authenticated
 
 exports.addFileToAnswer = async (req,res)=>{
+
+    logger.info('Add file to answer process started');
+    client.increment('file_addFileToAnswer');
 
 
 
@@ -539,6 +547,8 @@ exports.addFileToAnswer = async (req,res)=>{
               Error:"400 Bad Request"
           });
       });
+
+      logger.info('Add file to answer process ended');
 };
 
 
@@ -549,6 +559,9 @@ exports.addFileToAnswer = async (req,res)=>{
 
 //Delete a file from question - Authenticated
 exports.deleteFileFromQuestion = (req,res)=>{
+
+    logger.info('Delete file from question process started');
+    client.increment('file_deleteFileFromQuestion');
 
     const question_id = req.params.question_id;
     const file_id = req.params.file_id;
@@ -785,6 +798,8 @@ exports.deleteFileFromQuestion = (req,res)=>{
               Error:"404 Bad Request"
           });
       });
+
+      logger.info('Delete file from question process ended');
 };
 
 
@@ -870,6 +885,9 @@ exports.deleteFileFromQuestion = (req,res)=>{
 
 //Delete a file from Answer - Authenticated
 exports.deleteFileFromAnswer = (req,res)=>{
+
+    logger.info('Delete file from answer process started');
+    client.increment('file_deleteFileFromAnswer');
 
     const question_id = req.params.question_id;
     const answer_id = req.params.answer_id;
@@ -1065,6 +1083,8 @@ exports.deleteFileFromAnswer = (req,res)=>{
               Error:"404 Bad Request"
           });
       });
+
+      logger.info('Delete file from answer process ended');
 };
 
 
