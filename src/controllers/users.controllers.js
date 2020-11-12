@@ -103,7 +103,7 @@ exports.create = (req,res)=>{
                 return;
     }
 
-    var db_findall_user_create_start_time = Date.now();
+    
     
     //checking to see if user already exists in system, if exists throw error code 400
     Users.findAll({
@@ -115,7 +115,8 @@ exports.create = (req,res)=>{
         raw:true,
     })
     .then(data=>{
-        var db_findall_user_create_end_time = Date.now();
+        
+
         // console.log("userdatacheck"+ data);
         // console.log(JSON.stringify(data));
         if(data.length != 0){
@@ -123,7 +124,6 @@ exports.create = (req,res)=>{
                 Error:"400 Bad Request"
             });
             logger.warn('Bad Request');
-            client.timing('timing_db_findall_user_create', db_findall_user_create_end_time - db_findall_user_create_start_time );
             var user_create_end_time = Date.now();
             client.timing('timing_user_create', user_create_end_time - user_create_start_time );
             return;
@@ -135,6 +135,7 @@ exports.create = (req,res)=>{
             Users.create(users)
         .then(data=>{
             var db_create_user_create_end_time = Date.now();
+            client.timing('timing_db_create_user', db_create_user_create_end_time - db_create_user_create_start_time );
 
             return data;
         })
@@ -151,9 +152,8 @@ exports.create = (req,res)=>{
             });
             logger.warn('Bad Request');
             var db_create_user_create_end_time = Date.now();
-
             client.timing('timing_db_create_user', db_create_user_create_end_time - db_create_user_create_start_time );
-            client.timing('timing_db_findall_user_create', db_findall_user_create_end_time - db_findall_user_create_start_time );
+
             var user_create_end_time = Date.now();
             client.timing('timing_user_create', user_create_end_time - user_create_start_time );
 
@@ -166,8 +166,6 @@ exports.create = (req,res)=>{
             Error:"400 Bad Request"
         });
         logger.warn('Bad Request');
-        var db_findall_user_create_end_time = Date.now();
-        client.timing('timing_db_findall_user_create', db_findall_user_create_end_time - db_findall_user_create_start_time );
         var user_create_end_time = Date.now();
         client.timing('timing_user_create', user_create_end_time - user_create_start_time );
 
@@ -187,8 +185,7 @@ exports.create = (req,res)=>{
     logger.info('User creation process ended');
     var user_create_end_time = Date.now();
     client.timing('timing_user_create', user_create_end_time - user_create_start_time );
-    client.timing('timing_db_create_user', db_create_user_create_end_time - db_create_user_create_start_time );
-    client.timing('timing_db_findall_user_create', db_findall_user_create_end_time - db_findall_user_create_start_time );
+    
 
 
 };
@@ -257,6 +254,7 @@ exports.findUser = (req,res) =>{
     })
     .then(data=>{
         var db_findOne_user_find_end_time = Date.now();
+        client.timing('timing_db_findOne_user_find', db_findOne_user_find_end_time - db_findOne_user_find_start_time );
         // console.log(data);
         if(data.length != 0){
             bcrypt.compare(password, data.password, function(err, result) {
@@ -283,7 +281,6 @@ exports.findUser = (req,res) =>{
     logger.info('Find user process ended');
     var user_find_end_time = Date.now();
     client.timing('timing_user_find', user_find_end_time - user_find_start_time );
-    client.timing('timing_db_findOne_user_find', db_findOne_user_find_end_time - db_findOne_user_find_start_time );
 
 
 
@@ -385,7 +382,7 @@ exports.update = (req,res)=>{
           
         }
       
-        var db_findOne_user_update_start_time = Date.now();
+    
       Users.findOne({
           where: {
               username:{
@@ -395,9 +392,6 @@ exports.update = (req,res)=>{
           raw:true,
       })
       .then(data=>{
-        var db_findOne_user_update_end_time = Date.now();
-        client.timing('timing_db_findOne_user_update', db_findOne_user_update_end_time - db_findOne_user_update_start_time );
-
         
 
         //   console.log(data);
@@ -481,16 +475,12 @@ exports.update = (req,res)=>{
               Error:"400 Bad Request"
           });
           logger.warn('Bad Request');
-          var db_findOne_user_update_end_time = Date.now();
-          client.timing('timing_db_findOne_user_update', db_findOne_user_update_end_time - db_findOne_user_update_start_time );
       });
 
 
       logger.info('User update process ended');
       var user_update_end_time = Date.now();
       client.timing('timing_user_update', user_update_end_time - user_update_start_time );
-      client.timing('timing_db_findOne_user_update', db_findOne_user_update_end_time - db_findOne_user_update_start_time );
-      client.timing('timing_db_update_user_update', db_update_user_update_end_time - db_update_user_update_start_time );
 
 
 
@@ -571,7 +561,6 @@ exports.findUserById = (req,res) =>{
     logger.info('User findById process ended');
     var user_findById_end_time = Date.now();
     client.timing('timing_user_findById', user_findById_end_time - user_findById_start_time );
-    client.timing('timing_db_findByPk_user_findById', db_findByPk_user_findById_end_time - db_findByPk_user_findById_start_time );
 
 };
 
@@ -630,7 +619,6 @@ exports.createQuestion = async (req,res)=>{
   
       // console.log(req.headers.authorization);
       
-      var db_findOne_question_create_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -640,8 +628,6 @@ exports.createQuestion = async (req,res)=>{
           raw:true,
       })
       .then(data=>{
-        var db_findOne_question_create_end_time = Date.now();
-        client.timing('timing_db_findOne_question_create', db_findOne_question_create_end_time - db_findOne_question_create_start_time );
 
           //console.log(data);
         // data_user_id = data.id;
@@ -731,6 +717,8 @@ exports.createQuestion = async (req,res)=>{
                     res.status(401).send({
                       Error:"401 Unauthorized"
                   });
+                  logger.warn('Unauthorized');
+
                   }
                   //hasAccess(result,data);
               });
@@ -743,15 +731,13 @@ exports.createQuestion = async (req,res)=>{
           res.status(400).send({
               Error:"400 Bad Request"
           });
-          var db_findOne_question_create_end_time = Date.now();
-          client.timing('timing_db_findOne_question_create', db_findOne_question_create_end_time - db_findOne_question_create_start_time );
+          logger.warn('Bad Request');
+
       });
 
       logger.info('Question creation process ended');
       var question_create_end_time = Date.now();
       client.timing('timing_question_create', question_create_end_time - question_create_start_time );
-      client.timing('timing_db_findOne_question_create', db_findOne_question_create_end_time - db_findOne_question_create_start_time );
-      client.timing('timing_db_create_question_create', db_create_question_create_end_time - db_create_question_create_start_time );
 
 };
 
@@ -791,7 +777,6 @@ exports.findUserById = (req,res) =>{
             Error:"400 Bad Request"
         });
         logger.warn('Bad Request');
-        logger.info('User findById process ended');
         var db_findByPk_user_findById_end_time = Date.now();
         client.timing('timing_db_findByPk_user_findById', db_findByPk_user_findById_end_time - db_findByPk_user_findById_start_time );
 
@@ -800,7 +785,6 @@ exports.findUserById = (req,res) =>{
     logger.info('User findById process ended');
     var user_findById_end_time = Date.now();
     client.timing('timing_user_findById', user_findById_end_time - user_findById_start_time );
-    client.timing('timing_db_findByPk_user_findById', db_findByPk_user_findById_end_time - db_findByPk_user_findById_start_time );
 
 };
 
@@ -851,7 +835,6 @@ exports.findQuestionById = (req,res) =>{
     logger.info('Question findById process ended');
     var question_findById_end_time = Date.now();
     client.timing('timing_question_findById', question_findById_end_time - question_findById_start_time );
-    client.timing('timing_db_findByPk_question_findById', db_findByPk_question_findById_end_time - db_findByPk_question_findById_start_time );
 
     
 
@@ -875,7 +858,7 @@ exports.findAllQuestions = (req,res) =>{
     ]
     }).then(result =>{
         var db_findAll_question_findAll_end_time = Date.now();
-        client.timing('db_findAll_question_findAll', db_findAll_question_findAll_end_time - db_findAll_question_findAll_end_time );
+        client.timing('db_findAll_question_findAll', db_findAll_question_findAll_end_time - db_findAll_question_findAll_start_time );
         result = JSON.stringify(result);
         result = result.replace("files", "attachments");
         result = JSON.parse(result);
@@ -897,9 +880,7 @@ exports.findAllQuestions = (req,res) =>{
 
     logger.info('Question find all process ended');
     var question_findAll_end_time = Date.now();
-    var db_findAll_question_findAll_end_time = Date.now();
     client.timing('timing_question_findAll', question_findAll_end_time - question_findAll_start_time );
-    client.timing('db_findAll_question_findAll', db_findAll_question_findAll_end_time - db_findAll_question_findAll_start_time );
 
 
    
@@ -947,7 +928,6 @@ exports.answerQuestion = async (req,res)=>{
   
       // console.log(req.headers.authorization);
       
-      var db_findOne_answer_answerAQuestion_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -957,8 +937,6 @@ exports.answerQuestion = async (req,res)=>{
           raw:true,
       })
       .then(data=>{
-        var db_findOne_answer_answerAQuestion_end_time = Date.now();
-        client.timing('timing_db_findOne_answer_answerAQuestion', db_findOne_answer_answerAQuestion_end_time - db_findOne_answer_answerAQuestion_start_time );
 
           console.log(data);
         // data_user_id = data.id;
@@ -1081,16 +1059,12 @@ exports.answerQuestion = async (req,res)=>{
           res.status(400).send({
               Error:"400 Bad Request"
           });
-          var db_findOne_answer_answerAQuestion_end_time = Date.now();
-          client.timing('timing_db_findOne_answer_answerAQuestion', db_findOne_answer_answerAQuestion_end_time - db_findOne_answer_answerAQuestion_start_time );
 
       });
 
       logger.info('Answer a question process ended');
       var answer_answerAQuestion_end_time = Date.now();
       client.timing('timing_answer_answerAQuestion', answer_answerAQuestion_end_time - answer_answerAQuestion_start_time );
-      client.timing('timing_db_findOne_answer_answerAQuestion', db_findOne_answer_answerAQuestion_end_time - db_findOne_answer_answerAQuestion_start_time );
-      client.timing('timing_db_create_answer_answerAQuestion', db_create_answer_answerAQuestion_end_time - db_create_answer_answerAQuestion_start_time );
 
 
 };
@@ -1148,7 +1122,6 @@ exports.updateAnswer = (req,res)=>{
           
         }
 
-      var db_findOne_answer_updateAnswer_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -1158,8 +1131,6 @@ exports.updateAnswer = (req,res)=>{
           raw:true,
       })
       .then(data => {
-        var db_findOne_answer_updateAnswer_end_time = Date.now();
-        client.timing('timing_db_findOne_answer_updateAnswer', db_findOne_answer_updateAnswer_end_time - db_findOne_answer_updateAnswer_start_time );
           const currentUser_userId = data.id;
           console.log("loginuser :"+currentUser_userId);
           if(data.length != 0){
@@ -1216,6 +1187,9 @@ exports.updateAnswer = (req,res)=>{
                                                                     res.status(404).send({
                                                                         Error:"404 Not Found"
                                                                     });
+                                                                    logger.warn('Not Found');
+                                                                    var db_update_answer_updateAnswer_end_time = Date.now();
+                                                                    client.timing('timing_db_update_answer_updateAnswer', db_update_answer_updateAnswer_end_time - db_update_answer_updateAnswer_start_time );
                                                                 }); 
 
 
@@ -1231,6 +1205,9 @@ exports.updateAnswer = (req,res)=>{
                                         res.status(404).send({
                                             Error:"404 Not Found"
                                         });
+                                        logger.warn('Not Found');
+                                        var db_update_answer_updateAnswer_end_time = Date.now();
+                                        client.timing('timing_db_update_answer_updateAnswer', db_update_answer_updateAnswer_end_time - db_update_answer_updateAnswer_start_time );
                                     }); 
 
                         }})
@@ -1238,7 +1215,7 @@ exports.updateAnswer = (req,res)=>{
                         res.status(404).send({
                             Error:"404 Not Found"
                             })});
-
+                            logger.warn('Not Found');
                             var db_update_answer_updateAnswer_end_time = Date.now();
                             client.timing('timing_db_update_answer_updateAnswer', db_update_answer_updateAnswer_end_time - db_update_answer_updateAnswer_start_time );
                             
@@ -1261,16 +1238,16 @@ exports.updateAnswer = (req,res)=>{
           res.status(404).send({
               Error:"404 Bad Request"
           });
-          var db_findOne_answer_updateAnswer_end_time = Date.now();
-          client.timing('timing_db_findOne_answer_updateAnswer', db_findOne_answer_updateAnswer_end_time - db_findOne_answer_updateAnswer_start_time );
+          logger.warn('Bad Request');
+          var db_update_answer_updateAnswer_end_time = Date.now();
+          client.timing('timing_db_update_answer_updateAnswer', db_update_answer_updateAnswer_end_time - db_update_answer_updateAnswer_start_time );
+                            
 
       });
 
       logger.info('Update answer process ended');
       var answer_updateAnswer_end_time = Date.now();
       client.timing('timing_answer_updateAnswer', answer_updateAnswer_end_time - answer_updateAnswer_start_time );
-      client.timing('timing_db_findOne_answer_updateAnswer', db_findOne_answer_updateAnswer_end_time - db_findOne_answer_updateAnswer_start_time );
-      client.timing('timing_db_update_answer_updateAnswer', db_update_answer_updateAnswer_end_time - db_update_answer_updateAnswer_start_time );
 
 
 };
@@ -1329,7 +1306,6 @@ exports.deleteAnswer = (req,res)=>{
         }
 
 
-      var db_findOne_answer_deleteAnswer_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -1339,8 +1315,6 @@ exports.deleteAnswer = (req,res)=>{
           raw:true,
       })
       .then(data => {
-        var db_findOne_answer_deleteAnswer_end_time = Date.now();
-        client.timing('timing_db_findOne_answer_deleteAnswer', db_findOne_answer_deleteAnswer_end_time - db_findOne_answer_deleteAnswer_start_time );
         const currentUser_userId = data.id;
         console.log("loginuser :"+currentUser_userId);
           if(data.length != 0){
@@ -1352,6 +1326,7 @@ exports.deleteAnswer = (req,res)=>{
                     //finding question by pkid
                     Question.findByPk(question_id)
                     .then(data=>{
+
                         console.log(data);
                         if(data.length != 0){
                                     
@@ -1372,7 +1347,7 @@ exports.deleteAnswer = (req,res)=>{
 
 
                                                 console.log("answer id found in question table")
-
+                                                
                                                 //deleting answer
                                                 Answer.destroy({
                                                                 where: {
@@ -1384,6 +1359,11 @@ exports.deleteAnswer = (req,res)=>{
                                                         res.status(204).send({
                                                             Message:"No Content"
                                                         });
+
+                                                        logger.info('Delete answer process ended');
+                                                        var db_destroy_answer_deleteAnswer_end_time = Date.now();
+                                                        client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
+        
                                                         
                                                         
                                                     })
@@ -1391,6 +1371,11 @@ exports.deleteAnswer = (req,res)=>{
                                                         res.status(404).send({
                                                             Error:"404 Not Found"
                                                         });
+                                                        logger.warn('Not Found');
+                                                        logger.info('Delete answer process ended');
+                                                        var db_destroy_answer_deleteAnswer_end_time = Date.now();
+                                                        client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
+        
                                                     }); 
 
 
@@ -1401,6 +1386,12 @@ exports.deleteAnswer = (req,res)=>{
                                                 res.status(401).send({
                                                     Error:"401 Not Authorized"
                                                     });
+                                                    logger.warn('Not Authorized');
+                                                    logger.info('Delete answer process ended');
+                                                    var db_destroy_answer_deleteAnswer_end_time = Date.now();
+                                                    client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
+
+
                                             }
 
 
@@ -1409,6 +1400,11 @@ exports.deleteAnswer = (req,res)=>{
                                         res.status(404).send({
                                             Error:"404 Not Found"
                                         });
+                                        logger.warn('Not Found');
+                                        logger.info('Delete answer process ended');
+                                        var db_destroy_answer_deleteAnswer_end_time = Date.now();
+                                        client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
+
                                     }); 
 
                         }})
@@ -1416,6 +1412,8 @@ exports.deleteAnswer = (req,res)=>{
                         res.status(404).send({
                             Error:"404 Not Found"
                             })});
+                            logger.warn('Not Found');
+                            logger.info('Delete answer process ended');
                             var db_destroy_answer_deleteAnswer_end_time = Date.now();
                             client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
 
@@ -1426,6 +1424,10 @@ exports.deleteAnswer = (req,res)=>{
                     res.status(401).send({
                         Error:"401 Not Authorized"
                         });
+                        logger.warn('Not Authorized');
+                        logger.info('Delete answer process ended');
+                        var db_destroy_answer_deleteAnswer_end_time = Date.now();
+                        client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
 
                 }
 
@@ -1440,16 +1442,17 @@ exports.deleteAnswer = (req,res)=>{
           res.status(404).send({
               Error:"404 Bad Request"
           });
-          var db_findOne_answer_deleteAnswer_end_time = Date.now();
-          client.timing('timing_db_findOne_answer_deleteAnswer', db_findOne_answer_deleteAnswer_end_time - db_findOne_answer_deleteAnswer_start_time );
+          logger.warn('Bad Request');
+          logger.info('Delete answer process ended');
+          var db_destroy_answer_deleteAnswer_end_time = Date.now();
+          client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
+
   
       });
 
       logger.info('Delete answer process ended');
       var answer_deleteAnswer_end_time = Date.now();
       client.timing('timing_answer_deleteAnswer', answer_deleteAnswer_end_time - answer_deleteAnswer_start_time );
-      client.timing('timing_db_findOne_answer_deleteAnswer', db_findOne_answer_deleteAnswer_end_time - db_findOne_answer_deleteAnswer_start_time );
-      client.timing('timing_db_destroy_answer_deleteAnswer', db_destroy_answer_deleteAnswer_end_time - db_destroy_answer_deleteAnswer_start_time );
 
 
 };
@@ -1505,7 +1508,6 @@ exports.deleteQuestion = (req,res)=>{
           
         }
 
-      var db_findOne_question_deleteQuestion_start_time = Date.now();
       Users.findOne({
           where: {
               username:{
@@ -1515,8 +1517,6 @@ exports.deleteQuestion = (req,res)=>{
           raw:true,
       })
       .then(data => {
-        var db_findOne_question_deleteQuestion_end_time = Date.now()
-        client.timing('timing_db_findOne_question_deleteQuestion', db_findOne_question_deleteQuestion_end_time - db_findOne_question_deleteQuestion_start_time );
         const currentUser_userId = data.id;
         console.log("loginuser :"+currentUser_userId);
           if(data.length != 0){
@@ -1571,13 +1571,21 @@ exports.deleteQuestion = (req,res)=>{
                                                 res.status(204).send({
                                                     Message:"No Content"
                                                 });
-                                                
+
+                                                logger.info('Delete question process ended');
+                                                var question_deleteQuestion_end_time = Date.now();
+                                                client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
                                                 
                                             })
                                             .catch(err=>{
                                                 res.status(404).send({
                                                     Error:"401 Not Found"
                                                 });
+                                                logger.warn('Not Found');
+                                                logger.info('Delete question process ended');
+                                                var question_deleteQuestion_end_time = Date.now();
+                                                client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
                                             }); 
 
 
@@ -1589,6 +1597,11 @@ exports.deleteQuestion = (req,res)=>{
                                         res.status(401).send({
                                             Error:"401 Not Authorized"
                                             });
+                                            logger.warn('Not Authorized');
+                                            logger.info('Delete question process ended');
+                                            var question_deleteQuestion_end_time = Date.now();
+                                            client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
 
                                     }
 
@@ -1606,10 +1619,13 @@ exports.deleteQuestion = (req,res)=>{
                                 res.status(404).send({
                                     Error:"404 Not Found"
                                 });
+                                logger.warn('Not Found');
+                                logger.info('Delete question process ended');
+                                var question_deleteQuestion_end_time = Date.now();
+                                client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
                                 return;
                             });
-                            var db_destroy_question_deleteQuestion_end_time = Date.now();
-                            client.timing('timing_db_destroy_question_deleteQuestion', db_destroy_question_deleteQuestion_end_time - db_destroy_question_deleteQuestion_start_time );
 
 
                         }
@@ -1619,6 +1635,11 @@ exports.deleteQuestion = (req,res)=>{
                             res.status(401).send({
                                 Error:"401 Not Authorized"
                                 });
+                                logger.warn('Not Authorized');
+                                logger.info('Delete question process ended');
+                                var question_deleteQuestion_end_time = Date.now();
+                                client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
 
                         }
 
@@ -1633,16 +1654,17 @@ exports.deleteQuestion = (req,res)=>{
           res.status(404).send({
               Error:"404 Not Found"
           });
-          var db_findOne_question_deleteQuestion_end_time = Date.now();
-          client.timing('timing_db_findOne_question_deleteQuestion', db_findOne_question_deleteQuestion_end_time - db_findOne_question_deleteQuestion_start_time );
+          logger.warn('Not Found');
+          logger.info('Delete question process ended');
+          var question_deleteQuestion_end_time = Date.now();
+          client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
 
       });
 
       logger.info('Delete question process ended');
       var question_deleteQuestion_end_time = Date.now();
       client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
-      client.timing('timing_db_findOne_question_deleteQuestion', db_findOne_question_deleteQuestion_end_time - db_findOne_question_deleteQuestion_start_time );
-      client.timing('timing_db_destroy_question_deleteQuestion', db_destroy_question_deleteQuestion_end_time - db_destroy_question_deleteQuestion_start_time );
 
 
 };
@@ -1783,6 +1805,10 @@ exports.updateQuestion = async (req,res)=>{
                                         console.log(updatedQText);
             
                                         res.status(204).send({});
+                                        logger.info('Delete question process ended');
+                                        var question_deleteQuestion_end_time = Date.now();
+                                        client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
             
                                     }
 
@@ -1793,15 +1819,22 @@ exports.updateQuestion = async (req,res)=>{
                         }
                         else{
                             console.log("user who posted and user who is updating is not same, hence cannot update");
+                            logger.warn('Not Authorized');
+                            logger.info('Delete question process ended');
+                            var question_deleteQuestion_end_time = Date.now();
+                            client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
+
                             return res.status(401).send({Error: "Unauthorized" });
 
                         }
 
-                        var db_update_question_updateQuestion_end_time = Date.now();
-                        client.timing('timing_db_update_question_updateQuestion', db_update_question_updateQuestion_end_time - db_update_question_updateQuestion_start_time );
 
                 }
                 else{
+                    logger.warn('Not Authorized');
+                    logger.info('Delete question process ended');
+                    var question_deleteQuestion_end_time = Date.now();
+                    client.timing('timing_question_deleteQuestion', question_deleteQuestion_end_time - question_deleteQuestion_start_time );
 
                     return res.status(401).send({Error: "Unauthorized" });
 
@@ -1810,7 +1843,6 @@ exports.updateQuestion = async (req,res)=>{
                 logger.info('Update question process ended');
                 var question_updateQuestion_end_time = Date.now();
                 client.timing('timing_question_updateQuestion', question_updateQuestion_end_time - question_updateQuestion_start_time );
-                client.timing('timing_db_update_question_updateQuestion', db_update_question_updateQuestion_end_time - db_update_question_updateQuestion_start_time );
 
 
 };
@@ -1836,18 +1868,22 @@ exports.getAnswer = (req,res)=>{
                 Error: "400 Bad Request"
             });
             logger.warn('Bad Request');
+            logger.info('Get a question\'s answer process ended');
+            var question_getAnswer_end_time = Date.now();
+            client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
+
             return;
     }
 
 
-
+    var db_findByPk_question_getAnswer_start_time = Date.now();
      //finding question by pkid
      Question.findByPk(question_id)
      .then(data=>{
          console.log(data);
          if(data.length != 0){
 
-                    var db_findByPk_question_getAnswer_start_time = Date.now();
+                    
                      
                      //find answer by pkid
                      Answer.findByPk(answer_id,
@@ -1875,7 +1911,13 @@ exports.getAnswer = (req,res)=>{
                          if(data.length != 0){
                              console.log("answer id found in question table")
 
-                             
+                             var db_findByPk_question_getAnswer_end_time = Date.now();
+                             client.timing('db_findByPk_question_getAnswer', db_findByPk_question_getAnswer_end_time - db_findByPk_question_getAnswer_start_time );
+
+                             logger.info('Get a question\'s answer process ended');
+                             var question_getAnswer_end_time = Date.now();
+                             client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
+                
                              res.send(data);
 
 
@@ -1887,21 +1929,39 @@ exports.getAnswer = (req,res)=>{
                          res.status(404).send({
                              Error:"400 Not Found"
                          });
+                         logger.warn('Not Found');
+                         
+                         var db_findByPk_question_getAnswer_end_time = Date.now();
+                         client.timing('db_findByPk_question_getAnswer', db_findByPk_question_getAnswer_end_time - db_findByPk_question_getAnswer_start_time );
+            
+                         logger.info('Get a question\'s answer process ended');
+                         var question_getAnswer_end_time = Date.now();
+                         client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
+            
+
                      }); 
 
-                     var db_findByPk_question_getAnswer_end_time = Date.now();
 
          }})
      .catch(err=>{
          res.status(404).send({
              Error:"404 Not Found"
-             })});
+             })
+             logger.warn('Bad Request');
+             logger.info('Get a question\'s answer process ended');
+             var question_getAnswer_end_time = Date.now();
+
+             var db_findByPk_question_getAnswer_end_time = Date.now();
+             client.timing('db_findByPk_question_getAnswer', db_findByPk_question_getAnswer_end_time - db_findByPk_question_getAnswer_start_time );
+
+             client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
+     
+            });
 
 
              logger.info('Get a question\'s answer process ended');
              var question_getAnswer_end_time = Date.now();
              client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
-             client.timing('timing_db_findByPk_question_getAnswer', db_findByPk_question_getAnswer_start_time - db_findByPk_question_getAnswer_end_time );
 v
 
 
