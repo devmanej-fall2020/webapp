@@ -1930,7 +1930,7 @@ exports.getAnswer = (req,res)=>{
                              Error:"400 Not Found"
                          });
                          logger.warn('Not Found');
-                         
+
                          var db_findByPk_question_getAnswer_end_time = Date.now();
                          client.timing('db_findByPk_question_getAnswer', db_findByPk_question_getAnswer_end_time - db_findByPk_question_getAnswer_start_time );
             
@@ -1962,7 +1962,6 @@ exports.getAnswer = (req,res)=>{
              logger.info('Get a question\'s answer process ended');
              var question_getAnswer_end_time = Date.now();
              client.timing('timing_question_getAnswer', question_getAnswer_end_time - question_getAnswer_start_time );
-v
 
 
 
