@@ -125,7 +125,10 @@ exports.addFileToQuestion = async (req,res)=>{
                     if (err) {
                         logger.warn('Bad Request');
                         var s3_upload_file_addFileToQuestion_end_time = Date.now();
-                    client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
+                        client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
+                        var db_findOne_file_addFileToQuestion_end_time = Date.now();
+                        client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
+            
                         console.log("Error", err);
                     } if (data) {
 
@@ -295,6 +298,8 @@ exports.addFileToQuestion = async (req,res)=>{
                     res.status(401).send({
                       Error:"401 Unauthorized"
                   });
+
+
                   }
                   //hasAccess(result,data);
               });
@@ -311,13 +316,15 @@ exports.addFileToQuestion = async (req,res)=>{
           var db_findOne_file_addFileToQuestion_end_time = Date.now();
           client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
 
+          logger.info('Add file to question process ended');
+          var file_addFileToQuestion_end_time = Date.now();
+          client.timing('timing_file_addFileToQuestion', file_addFileToQuestion_end_time - file_addFileToQuestion_start_time );
+
       });
 
       logger.info('Add file to question process ended');
       var file_addFileToQuestion_end_time = Date.now();
       client.timing('timing_file_addFileToQuestion', file_addFileToQuestion_end_time - file_addFileToQuestion_start_time );
-      client.timing('timing_db_findOne_file_addFileToQuestion', db_findOne_file_addFileToQuestion_end_time - db_findOne_file_addFileToQuestion_start_time );
-      client.timing('timing_s3_upload_file_addFileToQuestion', s3_upload_file_addFileToQuestion_end_time - s3_upload_file_addFileToQuestion_start_time );
 
 
 };
@@ -894,13 +901,16 @@ exports.deleteFileFromQuestion = (req,res)=>{
           logger.warn('Bad Request');
           var db_find_file_deleteFileFromQuestion_end_time = Date.now();
           client.timing('timing_db_find_file_deleteFileFromQuestion', db_find_file_deleteFileFromQuestion_end_time - db_find_file_deleteFileFromQuestion_start_time );
+          
+          logger.info('Delete file from question process ended');
+          var file_deleteFileFromQuestion_end_time = Date.now();
+          client.timing('timing_file_deleteFileFromQuestion', file_deleteFileFromQuestion_end_time - file_deleteFileFromQuestion_start_time );
+    
       });
 
       logger.info('Delete file from question process ended');
       var file_deleteFileFromQuestion_end_time = Date.now();
       client.timing('timing_file_deleteFileFromQuestion', file_deleteFileFromQuestion_end_time - file_deleteFileFromQuestion_start_time );
-      client.timing('timing_db_find_file_deleteFileFromQuestion', db_find_file_deleteFileFromQuestion_end_time - db_find_file_deleteFileFromQuestion_start_time );
-      client.timing('timing_s3_delete_file_deleteFileFromQuestion', s3_delete_file_deleteFileFromQuestion_end_time - s3_delete_file_deleteFileFromQuestion_start_time );
 
 };
 
@@ -1210,8 +1220,6 @@ exports.deleteFileFromAnswer = (req,res)=>{
       logger.info('Delete file from answer process ended');
       var file_deleteFileFromAnswer_end_time = Date.now();
       client.timing('timing_file_deleteFileFromAnswer', file_deleteFileFromAnswer_end_time - file_deleteFileFromAnswer_start_time );
-      client.timing('timing_db_find_file_deleteFileFromAnswer', db_find_file_deleteFileFromAnswer_end_time - db_find_file_deleteFileFromAnswer_start_time );
-      client.timing('timing_s3_delete_file_deleteFileFromAnswer', s3_delete_file_deleteFileFromAnswer_end_time - s3_delete_file_deleteFileFromAnswer_start_time );
 
 };
 
