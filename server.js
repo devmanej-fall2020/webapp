@@ -2,6 +2,7 @@ const express = require ("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const database = require("./src/models")
+const logger = require("./src/config/logger")
 
 let app = express();
 PORT = 4000;
@@ -19,6 +20,7 @@ require("./src/routes/users.routes")(app);
 
 app.listen(PORT, () =>{
     console.log(`Server running on port ${PORT}`);
+    logger.info('Application has been deployed successfully ')
 });
 
 module.exports = app;
