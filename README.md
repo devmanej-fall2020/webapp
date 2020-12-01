@@ -1,7 +1,7 @@
 # webapp
 CSYE6225 Fall 2020 WebApp
 
-Cloud Computing Coursework Project:
+Cloud Computing Coursework Project
 
 Prerequisites:
 The following are to be installed:
