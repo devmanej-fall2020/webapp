@@ -923,7 +923,7 @@ exports.answerQuestion = async (req,res)=>{
 
       // Create publish parameters
       var sns_params = {
-        Message: 'test message', /* required */
+        Message: '', /* required */
         TopicArn: process.env.SNS_TOPIC
       };
 
@@ -947,6 +947,7 @@ exports.answerQuestion = async (req,res)=>{
           raw:true,
       })
       .then(data=>{
+          og_username = data.username;
 
           console.log(data);
         // data_user_id = data.id;
@@ -1040,6 +1041,16 @@ exports.answerQuestion = async (req,res)=>{
                         data = JSON.parse(data);
                         // delete data.password;
                         console.log((data));
+
+                        message = {
+                            email_address : og_username,
+                            question_id: data.questionId,
+                            answer_id: data.id,
+                            answer_text: req.body.answer_text,
+                            link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                        }
+
+                        sns_params.Message = JSON.stringify(message);
 
                         publishTextPromise.then(
                             function(data) {
