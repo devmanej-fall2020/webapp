@@ -1043,7 +1043,7 @@ exports.answerQuestion = async (req,res)=>{
 
                         publishTextPromise.then(
                             function(data) {
-                                logger.info(`Message ${params.Message} sent to the topic ${params.TopicArn}`);
+                                logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
                                 logger.info("MessageID is " + data.MessageId);
                             }).catch(
                               function(err) {
