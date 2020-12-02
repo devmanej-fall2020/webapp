@@ -924,7 +924,7 @@ exports.answerQuestion = async (req,res)=>{
       // Create publish parameters
       var sns_params = {
         Message: 'test message', /* required */
-        TopicArn: 'SNS_TOPIC'
+        TopicArn: process.env.SNS_TOPIC
       };
 
     // Create promise and SNS service object
