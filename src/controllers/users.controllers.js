@@ -1043,19 +1043,17 @@ exports.answerQuestion = async (req,res)=>{
                         console.log((data));
                         logger.info(JSON.stringify(data));
 
-                        const quesDetails = await Question.findByPk(req.params.question_id);
-                        const quesUser = quesDetails.userId;
-                        const userDetails = await Users.findByPk(quesUser);
-                        const quesUserEmail = userDetails.username;
-                         
+                        
                         var message = {
-                            email_address : quesUserEmail,
-                            question_id: req.params.question_id,
+                            email_address : og_username,
+                            question_id: data.questionId,
                             answer_id: data.id,
                             answer_text: req.body.answer_text,
                             link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
                         };
                         
+                        
+
                         sns_params.Message = JSON.stringify(message);
 
                         var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
