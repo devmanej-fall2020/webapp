@@ -1055,6 +1055,16 @@ exports.answerQuestion = async (req,res)=>{
 
                         sns_params.Message = JSON.stringify(message);
 
+                        message = {
+                            email_address : og_username,
+                            question_id: data.questionId,
+                            answer_id: data.id,
+                            answer_text: req.body.answer_text,
+                            link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                        }
+
+                        sns_params.Message = JSON.stringify(message);
+
                         publishTextPromise.then(
                             function(data) {
                                 logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
