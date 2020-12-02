@@ -1043,17 +1043,9 @@ exports.answerQuestion = async (req,res)=>{
                         console.log((data));
                         logger.info(JSON.stringify(data));
 
-                        var quesjson = await Question.findByPk(data.questionId);
-                        quesjson =  JSON.parse(JSON.stringify(quesjson));
-                        ques_userid = quesjson.userId;
-
-                        var userjson = await User.findByPk(ques_userid);
-                        userjson =  JSON.parse(JSON.stringify(quesjson));
-                        var email_of_question_poster = userjson.username;
-
                         
                         var message = {
-                            email_address : email_of_question_poster,
+                            email_address : og_username,
                             question_id: data.questionId,
                             answer_id: data.id,
                             answer_text: req.body.answer_text,
