@@ -921,6 +921,16 @@ exports.answerQuestion = async (req,res)=>{
             return;
     }
 
+      // Create publish parameters
+      var sns_params = {
+        Message: 'test message', /* required */
+        TopicArn: 'SNS_TOPIC'
+      };
+
+    // Create promise and SNS service object
+    var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+
+
 
       creds = parseHeader(req.headers.authorization);
 
@@ -1030,6 +1040,16 @@ exports.answerQuestion = async (req,res)=>{
                         data = JSON.parse(data);
                         // delete data.password;
                         console.log((data));
+
+                        publishTextPromise.then(
+                            function(data) {
+                              console.log(`Message ${params.Message} sent to the topic ${params.TopicArn}`);
+                              console.log("MessageID is " + data.MessageId);
+                            }).catch(
+                              function(err) {
+                              console.error(err, err.stack);
+                            });
+                        
                         res.send(data);
 
                     });
