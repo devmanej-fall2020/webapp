@@ -928,7 +928,7 @@ exports.answerQuestion = async (req,res)=>{
       };
 
     // Create promise and SNS service object
-    var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+    
 
 
 
@@ -1055,6 +1055,8 @@ exports.answerQuestion = async (req,res)=>{
                         
 
                         sns_params.Message = JSON.stringify(message);
+
+                        var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
 
                         publishTextPromise.then(
                             function(data) {
