@@ -1491,8 +1491,9 @@ exports.deleteAnswer = (req,res)=>{
                                                                     var message = {
                                                                         email_address : data.username,
                                                                         question_id: req.params.question_id,
-                                                                        answer_id: ansId,
-                                                                        answer_text: req.body.answer_text
+                                                                        answer_id: "N/A",
+                                                                        answer_text: "N/A",
+                                                                        link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                                                                     };
 
                                                                     console.log("message")
