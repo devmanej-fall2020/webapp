@@ -1183,7 +1183,6 @@ exports.updateAnswer = (req,res)=>{
                     Question.findByPk(question_id)
                     .then(data=>{
                         console.log(data);
-                        let quesuser = data.userId;
                         if(data.length != 0){
                             
                                     
@@ -1251,6 +1250,7 @@ exports.updateAnswer = (req,res)=>{
                                                                         res.status(404).send({
                                                                             Error:"404 Not Found"
                                                                         });
+                                                                        logger.info('Not finding user');
                                                                        
                                                                     }); 
 
