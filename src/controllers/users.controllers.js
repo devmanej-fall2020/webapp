@@ -1228,6 +1228,12 @@ exports.updateAnswer = (req,res)=>{
                                                                             Users.findByPk(quesuserid)
                                                                             .then(data=>{
 
+                                                                                 // Create publish parameters
+                                                                                var sns_params = {
+                                                                                    Message: '', /* required */
+                                                                                    TopicArn: process.env.SNS_TOPIC
+                                                                                };
+
                                                                                 var message = {
                                                                                     email_address : data.username,
                                                                                     question_id: req.params.question_id,
