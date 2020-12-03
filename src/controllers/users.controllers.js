@@ -1217,32 +1217,59 @@ exports.updateAnswer = (req,res)=>{
 
                                                                     Question.findByPk(req.params.question_id)
                                                                     .then(data=>{
+
+                                                                        console.log("find question again")
+                                                                        console.log(data);
+
                                                                         logger.info(data);
 
-                                                                        let quesuser = data.username;
+                                                                        let quesuserid = data.user_id;
 
-                                                                        var message = {
-                                                                            email_address : quesuser,
-                                                                            question_id: req.params.question_id,
-                                                                            answer_id: ansId,
-                                                                            answer_text: req.body.answer_text,
-                                                                            link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
-                                                                        };
+                                                                            Users.findByPk(quesuserid)
+                                                                            .then(data=>{
+
+                                                                                var message = {
+                                                                                    email_address : data.username,
+                                                                                    question_id: req.params.question_id,
+                                                                                    answer_id: ansId,
+                                                                                    answer_text: req.body.answer_text,
+                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                                                                                };
+        
+                                                                                console.log("message")
+                                                                                console.log(message);
+
+                                                                                sns_params.Message = JSON.stringify(message);
+                                                
+                                                                                var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+                                                        
+                                                                                publishTextPromise.then(
+                                                                                    function(data) {
+                                                                                        logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
+                                                                                        logger.info("MessageID is " + data.MessageId);
+                                                                                    }).catch(
+                                                                                      function(err) {
+                                                                                      console.error(err, err.stack);
+                                                                                    });
+
+
+                                                                            })
+                                                                            .catch(err=>{
+                                                                                res.status(404).send({
+                                                                                    Error:"404 Not Found"
+                                                                                });
+                                                                                
+                                                                            
+                                                                            }); 
+                                                                        
+
+
+
                                                                         
                                                                         
+                                                                        
                                                 
-                                                                        sns_params.Message = JSON.stringify(message);
-                                                
-                                                                        var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
-                                                
-                                                                        publishTextPromise.then(
-                                                                            function(data) {
-                                                                                logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
-                                                                                logger.info("MessageID is " + data.MessageId);
-                                                                            }).catch(
-                                                                              function(err) {
-                                                                              console.error(err, err.stack);
-                                                                            });
+                                                                        
 
 
                                                                     })
@@ -1250,7 +1277,7 @@ exports.updateAnswer = (req,res)=>{
                                                                         res.status(404).send({
                                                                             Error:"404 Not Found"
                                                                         });
-                                                                        logger.info('Not finding user');
+                                                                        
                                                                        
                                                                     }); 
 
