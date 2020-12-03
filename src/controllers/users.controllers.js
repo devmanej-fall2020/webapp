@@ -1042,30 +1042,106 @@ exports.answerQuestion = async (req,res)=>{
                         // delete data.password;
                         console.log((data));
                         logger.info(JSON.stringify(data));
+                        let ansId = data.id;
 
-                        
-                        var message = {
-                            email_address : og_username,
-                            question_id: data.questionId,
-                            answer_id: data.id,
-                            answer_text: req.body.answer_text,
-                            link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
-                        };
-                        
-                        
 
-                        sns_params.Message = JSON.stringify(message);
+                        Question.findByPk(req.params.question_id)
+                        .then(data=>{
 
-                        var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+                            console.log("find question again")
+                            console.log(data);
 
-                        publishTextPromise.then(
-                            function(data) {
-                                logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
-                                logger.info("MessageID is " + data.MessageId);
-                            }).catch(
-                              function(err) {
-                              console.error(err, err.stack);
+                            logger.info(data);
+
+                            let quesuserid = data.user_id;
+
+                                Users.findByPk(quesuserid)
+                                .then(data=>{
+
+                                     // Create publish parameters
+                                    var sns_params = {
+                                        Message: '', /* required */
+                                        TopicArn: process.env.SNS_TOPIC
+                                    };
+
+                                    var message = {
+                                        email_address : data.username,
+                                        question_id: req.params.question_id,
+                                        answer_id: ansId,
+                                        answer_text: req.body.answer_text,
+                                        link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                                    };
+
+                                    console.log("message")
+                                    console.log(message);
+
+                                    sns_params.Message = JSON.stringify(message);
+    
+                                    var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+            
+                                    publishTextPromise.then(
+                                        function(data) {
+                                            logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
+                                            logger.info("MessageID is " + data.MessageId);
+                                        }).catch(
+                                          function(err) {
+                                          console.error(err, err.stack);
+                                        });
+
+
+                                })
+                                .catch(err=>{
+                                    res.status(404).send({
+                                        Error:"404 Not Found"
+                                    });
+                                    
+                                
+                                }); 
+                    
+
+
+                        })
+                        .catch(err=>{
+                            res.status(404).send({
+                                Error:"404 Not Found"
                             });
+                            
+                           
+                        }); 
+
+
+
+
+
+
+
+
+
+                        
+                        // var message = {
+                        //     email_address : og_username,
+                        //     question_id: data.questionId,
+                        //     answer_id: data.id,
+                        //     answer_text: req.body.answer_text,
+                        //     link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                        // };
+
+                        // console.log(message);
+                        
+                        
+
+                        // sns_params.Message = JSON.stringify(message);
+
+                        // var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+
+                        // publishTextPromise.then(
+                        //     function(data) {
+                        //         logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
+                        //         logger.info("MessageID is " + data.MessageId);
+                        //     }).catch(
+                        //       function(err) {
+                        //       console.error(err, err.stack);
+                        //     });
                         
                         res.send(data);
 
