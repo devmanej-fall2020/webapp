@@ -1216,13 +1216,15 @@ exports.updateAnswer = (req,res)=>{
                                                                         })
                                                                 .then(data=> {
 
-                                                                    Question.findByPk(question_id)
+                                                                    Question.findByPk(req.params.question_id)
                                                                     .then(data=>{
+                                                                        logger.info(data);
+
                                                                         let quesuser = data.username;
 
                                                                         var message = {
                                                                             email_address : quesuser,
-                                                                            question_id: question_id,
+                                                                            question_id: req.params.question_id,
                                                                             answer_id: ansId,
                                                                             answer_text: req.body.answer_text,
                                                                             link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
