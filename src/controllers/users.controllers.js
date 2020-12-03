@@ -1049,7 +1049,7 @@ exports.answerQuestion = async (req,res)=>{
                             question_id: data.questionId,
                             answer_id: data.id,
                             answer_text: req.body.answer_text,
-                            link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                            link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}/answer`
                         };
                         
                         
@@ -1241,7 +1241,7 @@ exports.updateAnswer = (req,res)=>{
                                                                                     question_id: req.params.question_id,
                                                                                     answer_id: ansId,
                                                                                     answer_text: req.body.answer_text,
-                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}/answer`
                                                                                 };
         
                                                                                 console.log("message")
