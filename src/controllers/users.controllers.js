@@ -1183,6 +1183,7 @@ exports.updateAnswer = (req,res)=>{
                     Question.findByPk(question_id)
                     .then(data=>{
                         console.log(data);
+                        let quesuser = data.userId;
                         if(data.length != 0){
                             
                                     
@@ -1194,6 +1195,7 @@ exports.updateAnswer = (req,res)=>{
                                         console.log("answeruser :"+answerAuthor_userId);
                                         console.log(data);
                                         answer_ret = data.answer_text;
+                                        let ansId = data.id;
                                         if(data.length != 0){
 
                                                 //check whether same user who posted answer is updating answer
@@ -1213,6 +1215,47 @@ exports.updateAnswer = (req,res)=>{
                                                                             }
                                                                         })
                                                                 .then(data=> {
+
+                                                                    Question.findByPk(question_id)
+                                                                    .then(data=>{
+                                                                        let quesuser = data.username;
+
+                                                                        var message = {
+                                                                            email_address : quesuser,
+                                                                            question_id: question_id,
+                                                                            answer_id: ansId,
+                                                                            answer_text: req.body.answer_text,
+                                                                            link: `http://www.api.prod.jaisubashdevmane.me/v1/${req.params.question_id}/answer`
+                                                                        };
+                                                                        
+                                                                        
+                                                
+                                                                        sns_params.Message = JSON.stringify(message);
+                                                
+                                                                        var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+                                                
+                                                                        publishTextPromise.then(
+                                                                            function(data) {
+                                                                                logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
+                                                                                logger.info("MessageID is " + data.MessageId);
+                                                                            }).catch(
+                                                                              function(err) {
+                                                                              console.error(err, err.stack);
+                                                                            });
+
+
+                                                                    })
+                                                                    .catch(err=>{
+                                                                        res.status(404).send({
+                                                                            Error:"404 Not Found"
+                                                                        });
+                                                                       
+                                                                    }); 
+
+
+
+                                                                    
+
 
                                                                     res.status(204).send({
                                                                         Message:"No Content"
