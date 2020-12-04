@@ -1317,7 +1317,7 @@ exports.updateAnswer = (req,res)=>{
                                                                                     question_id: req.params.question_id,
                                                                                     answer_id: ansId,
                                                                                     answer_text: req.body.answer_text,
-                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}/answer/${ansId}`
+                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                                                                                 };
         
                                                                                 console.log("message")
