@@ -42,3 +42,16 @@ Running the Application:
 
 Testing Steps:
 1. The application has test cases included. To perform testing, run npm test. The test suite will run the tests, and provide information on whether the tests have passed.
+
+Importing Certificate in AWS Certificate Manager:
+1. In AWS, we generally have two ways of importing a certificate to Certificate Manager, one is through CLI and one is through AWS Console.
+2. In this application, we will be importing the certificate through the CLI. You will first have to change the user profile in the CLI to the AWS account you would like to add the changes to.
+You can achieve this by ```export AWS_PROFILE=prod``` where prod stands for the alias to production account.
+3.  The command to import the certificate is listed below.
+
+```$ aws acm import-certificate --certificate fileb://certificate_body.pem --certificate-chain fileb://certificate_chain.pem  --private-key fileb://private_key.pem```
+
+where,
+    1. --certificate stands for the certificate body
+    2. --certificate-chain stands for certificate chain
+    3. --private-key stands for private key
