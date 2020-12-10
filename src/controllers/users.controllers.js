@@ -1069,7 +1069,7 @@ exports.answerQuestion = async (req,res)=>{
                                         question_id: req.params.question_id,
                                         answer_id: ansId,
                                         answer_text: req.body.answer_text,
-                                        link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                                        link: `https://prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                                     };
 
                                     console.log("message")
@@ -1123,7 +1123,7 @@ exports.answerQuestion = async (req,res)=>{
                         //     question_id: data.questionId,
                         //     answer_id: data.id,
                         //     answer_text: req.body.answer_text,
-                        //     link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                        //     link: `https://prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                         // };
 
                         // console.log(message);
@@ -1317,7 +1317,7 @@ exports.updateAnswer = (req,res)=>{
                                                                                     question_id: req.params.question_id,
                                                                                     answer_id: ansId,
                                                                                     answer_text: req.body.answer_text,
-                                                                                    link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                                                                                    link: `https://prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                                                                                 };
         
                                                                                 console.log("message")
@@ -1569,7 +1569,7 @@ exports.deleteAnswer = (req,res)=>{
                                                                         question_id: req.params.question_id,
                                                                         answer_id: "N/A",
                                                                         answer_text: "N/A",
-                                                                        link: `http://www.api.prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                                                                        link: `https://prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
                                                                     };
 
                                                                     console.log("message")
