@@ -511,6 +511,22 @@ exports.findUserById = (req,res) =>{
 
     // console.log(req.headers.authorization);
 
+    // function hasAccess(result,data){
+    //     // console.log(JSON.stringify(data));
+    //     if (result) {
+    //         delete data.password;
+    //       // insert login code here
+    //     //   console.log("Access Granted!");
+    //       res.send(data);
+    //     }
+    //     else {
+    //       // insert access denied code here
+    //     //   console.log("Access Denied!");
+    //       res.status(400).send({
+    //         Error:"400 Bad Request"
+    //     });
+    //     }
+    //   }
     
     var db_findByPk_user_findById_start_time = Date.now();
     Users.findByPk(id)
@@ -522,6 +538,11 @@ exports.findUserById = (req,res) =>{
             data = JSON.parse(JSON.stringify(data));
             delete data.password;
             res.send(data);
+            // hasAccess(result,data);
+            // bcrypt.compare(password, data.password, function(err, result) {
+            //     console.log(result);
+            //     // console.log("err"+err);
+            // });
         }
         else{
             throw err;
@@ -961,15 +982,57 @@ exports.answerQuestion = async (req,res)=>{
                     client.timing('timing_db_create_answer_answerAQuestion', db_create_answer_answerAQuestion_end_time - db_create_answer_answerAQuestion_start_time );
 
                     
+                    
+                    // .then(data=>{
+                    //     return data;
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     console.log(data);
+                    //     // res.status(201).send(data);
+                    // })
+                    // .catch(err=>{
+                    //     res.status(400).send({
+                    //         Error:"400 Bad Request"
+                    //     });
+                    //     return;
+                    // });
                     answer1 = JSON.parse(JSON.stringify(answer_created));
 
                     console.log(answer1);
 
+                    // await user.addQuestion(question);
+
+
+                    //console.log(q_add);
+                    //console.log(user);
+                    //user.addQuestion(q_add);
+                    // question.setUser(user);
+
+
+                    // const testQuestion = Question.create({
+                    //     question_text: "test question"
+                    // });
+
+                    // const testCategory = Category.create({
+                    //     category: "test category"
+                    // });
+
+                    // testQuestion.addCategory(testCategory);
+
                     const ans = Answer.findByPk(answer1.id, {
                         include: [
                             {model: File, as: "files", attributes: ["id", "file_name", "s3_object_name", "createdAt"]}
-                                ]
-                        }
+                    ]
+                    }
+                        // {model: File, as: "files"}
+                        // ,
+                    //     {
+                    //     include:Category
+                    //         // include: [Answer],
+                          
+                    // }
+                    
                     )
                     .then(data =>{
                         //data = JSON.parse(JSON.stringify(data));
@@ -1046,11 +1109,50 @@ exports.answerQuestion = async (req,res)=>{
                            
                         }); 
 
+
+
+
+
+
+
+
+
+                        
+                        // var message = {
+                        //     email_address : og_username,
+                        //     question_id: data.questionId,
+                        //     answer_id: data.id,
+                        //     answer_text: req.body.answer_text,
+                        //     link: `https://prod.jaisubashdevmane.me/v1/question/${req.params.question_id}`
+                        // };
+
+                        // console.log(message);
+                        
+                        
+
+                        // sns_params.Message = JSON.stringify(message);
+
+                        // var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(sns_params).promise();
+
+                        // publishTextPromise.then(
+                        //     function(data) {
+                        //         logger.info(`Message ${sns_params.Message} sent to the topic ${sns_params.TopicArn}`);
+                        //         logger.info("MessageID is " + data.MessageId);
+                        //     }).catch(
+                        //       function(err) {
+                        //       console.error(err, err.stack);
+                        //     });
                         
                         res.send(data);
 
                     });
-                    
+                    //console.log(ans);
+                    // ques.forEach(ques =>{
+                    //     console.log(ques.Category[0])
+                    // });
+
+                    // insert login code here
+                  //   console.log("Access Granted!");
                   }
                   else {
                     // insert access denied code here
