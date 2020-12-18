@@ -203,6 +203,94 @@ exports.addFileToQuestion = async (req,res)=>{
                     }
                     });
                     
+                    
+
+                    // var bucketParams = {
+                    //     Bucket : 'webapp.jaisubash.devmane',
+                    //   };
+                      
+                    //   // Call S3 to obtain a list of the objects in the bucket
+                    //   s3.listObjects(bucketParams, function(err, data) {
+                    //     if (err) {
+                    //       console.log("Error", err);
+                    //     } else {
+                    //       //console.log("Success", data);
+                    //     }
+                    //   }.then());
+
+
+
+
+                    // let user = await Users.findOne({
+                    //     where: {
+                    //         username:{
+                    //             [Op.eq]: `${h_username}`
+                    //         }
+                    //     },
+                    //     raw:true,
+                    // });
+
+                
+                    // let answer = await Answer.create({
+                    //     answer_text: req.body.answer_text,
+                    //     userId: `${data.id}`,
+                    //     questionId: `${question_id}`                   
+                    //     }
+                    //   )
+                    // .then(data=>{
+                    //     return data;
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     console.log(data);
+                    //     res.status(201).send(data);
+                    // })
+                    // .catch(err=>{
+                    //     res.status(400).send({
+                    //         Error:"400 Bad Request"
+                    //     });
+                    //     return;
+                    // });
+
+                    // await user.addQuestion(question);
+
+
+                    //console.log(q_add);
+                    //console.log(user);
+                    //user.addQuestion(q_add);
+                    // question.setUser(user);
+
+
+                    // const testQuestion = Question.create({
+                    //     question_text: "test question"
+                    // });
+
+                    // const testCategory = Category.create({
+                    //     category: "test category"
+                    // });
+
+                    // testQuestion.addCategory(testCategory);
+
+                    // const ques = Question.findAll( {
+                    //     include:Category,
+                        
+                    //         // include: [Answer],
+                          
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     // delete data.password;
+                    //     console.log((data));
+                    //     // res.send(data);
+
+                    // });
+                    //console.log(ques);
+                    // ques.forEach(ques =>{
+                    //     console.log(ques.Category[0])
+                    // });
+
+                    // insert login code here
+                  //   console.log("Access Granted!");
                   }
                   else {
                     // insert access denied code here
@@ -427,6 +515,95 @@ exports.addFileToAnswer = async (req,res)=>{
                     });
 
                     
+
+                    
+
+                    // var bucketParams = {
+                    //     Bucket : 'webapp.jaisubash.devmane',
+                    //   };
+                      
+                    //   // Call S3 to obtain a list of the objects in the bucket
+                    //   s3.listObjects(bucketParams, function(err, data) {
+                    //     if (err) {
+                    //       console.log("Error", err);
+                    //     } else {
+                    //       //console.log("Success", data);
+                    //     }
+                    //   }.then());
+
+
+
+
+                    // let user = await Users.findOne({
+                    //     where: {
+                    //         username:{
+                    //             [Op.eq]: `${h_username}`
+                    //         }
+                    //     },
+                    //     raw:true,
+                    // });
+
+                
+                    // let answer = await Answer.create({
+                    //     answer_text: req.body.answer_text,
+                    //     userId: `${data.id}`,
+                    //     questionId: `${question_id}`                   
+                    //     }
+                    //   )
+                    // .then(data=>{
+                    //     return data;
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     console.log(data);
+                    //     res.status(201).send(data);
+                    // })
+                    // .catch(err=>{
+                    //     res.status(400).send({
+                    //         Error:"400 Bad Request"
+                    //     });
+                    //     return;
+                    // });
+
+                    // await user.addQuestion(question);
+
+
+                    //console.log(q_add);
+                    //console.log(user);
+                    //user.addQuestion(q_add);
+                    // question.setUser(user);
+
+
+                    // const testQuestion = Question.create({
+                    //     question_text: "test question"
+                    // });
+
+                    // const testCategory = Category.create({
+                    //     category: "test category"
+                    // });
+
+                    // testQuestion.addCategory(testCategory);
+
+                    // const ques = Question.findAll( {
+                    //     include:Category,
+                        
+                    //         // include: [Answer],
+                          
+                    // })
+                    // .then(data =>{
+                    //     data = JSON.parse(JSON.stringify(data));
+                    //     // delete data.password;
+                    //     console.log((data));
+                    //     // res.send(data);
+
+                    // });
+                    //console.log(ques);
+                    // ques.forEach(ques =>{
+                    //     console.log(ques.Category[0])
+                    // });
+
+                    // insert login code here
+                  //   console.log("Access Granted!");
                   }
                   else {
                     // insert access denied code here
@@ -651,6 +828,23 @@ exports.deleteFileFromQuestion = (req,res)=>{
                                                 }); 
 
 
+
+
+
+
+
+                                        
+
+
+
+
+
+
+
+
+
+
+
                                 }
                                 else{
                                     console.log("user not match.you cannot delete answer");
@@ -661,19 +855,26 @@ exports.deleteFileFromQuestion = (req,res)=>{
 
                                 }
 
+
+
+
                             }
                             else{
                                 console.log("question cannot be deleted. it has answers")
                                 //throw 404
                                 throw err;
-                            }                        
+                            }
+
+
+
+                                    
                                     
 
                         }})
-                        .catch(err=>{
-                            res.status(404).send({
+                    .catch(err=>{
+                        res.status(404).send({
                             Error:"404 Not Found"
-                                })});
+                            })});
                     
 
                 }
@@ -713,6 +914,80 @@ exports.deleteFileFromQuestion = (req,res)=>{
 
 };
 
+
+
+
+
+
+
+
+////////////////////////////////////////
+
+
+//  //finding file by pkid
+//  File.findByPk(file_id)
+//  .then(data=>{
+//      file_key = data.key;
+//      console.log("filekey" + file_key );
+
+//      console.log(data);
+//      if(data.length != 0){
+
+
+
+
+//              // // //deleting file
+//              // File.destroy({
+//              //     where: {
+//              //         id: file_id
+//              //     }
+//              //         })
+//              // .then(data=>{
+
+//              //     //delete from aws s3 bucket, same object
+
+
+
+//              //     var params = {
+//              //         Bucket: "webapp.jaisubash.devmane", 
+//              //         Key: "objectkey.jpg"
+//              //         };
+
+//              //         s3.deleteObject(params, function(err, data) {
+//              //             if (err) console.log(err, err.stack); // an error occurred
+//              //             else     console.log(data);           // successful response
+//              //             /*
+//              //             data = {
+//              //             }
+//              //             */
+//              //         });
+
+//              // })
+//              // .then(data=> {
+
+//              //     res.status(204).send({
+//              //         Message:"No Content"
+//              //     });
+                 
+                 
+//              // })
+//              // .catch(err=>{
+//              //     res.status(404).send({
+//              //         Error:"404 Not Found"
+//              //     });
+//              // }); 
+
+
+
+//      }
+//      else{
+//          throw err;
+//      }})
+//  .catch(err=>{
+//          res.status(404).send({
+//              Error:"404 Not Found"
+//          });
+//  }); 
 
 
 ///////////////////////////////////////
