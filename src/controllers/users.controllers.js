@@ -511,22 +511,6 @@ exports.findUserById = (req,res) =>{
 
     // console.log(req.headers.authorization);
 
-    // function hasAccess(result,data){
-    //     // console.log(JSON.stringify(data));
-    //     if (result) {
-    //         delete data.password;
-    //       // insert login code here
-    //     //   console.log("Access Granted!");
-    //       res.send(data);
-    //     }
-    //     else {
-    //       // insert access denied code here
-    //     //   console.log("Access Denied!");
-    //       res.status(400).send({
-    //         Error:"400 Bad Request"
-    //     });
-    //     }
-    //   }
     
     var db_findByPk_user_findById_start_time = Date.now();
     Users.findByPk(id)
@@ -538,11 +522,6 @@ exports.findUserById = (req,res) =>{
             data = JSON.parse(JSON.stringify(data));
             delete data.password;
             res.send(data);
-            // hasAccess(result,data);
-            // bcrypt.compare(password, data.password, function(err, result) {
-            //     console.log(result);
-            //     // console.log("err"+err);
-            // });
         }
         else{
             throw err;
